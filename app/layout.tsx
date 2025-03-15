@@ -1,19 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import {
-  ClerkProvider,
-  SignedIn,
-  SignedOut,
-  SignIn,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Inter } from "next/font/google";
+import Providers from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "MaxWork Consulting Client Portal",
-  description: "MaxWork Consulting Client Portal",
+  description: "MaxWork Consulting Client Portal for job seekers",
 };
 
 export default function RootLayout({
@@ -26,17 +21,7 @@ export default function RootLayout({
       <ClerkProvider>
         <html lang="en" suppressHydrationWarning>
           <body className={inter.className}>
-            {/* <header className="flex justify-between ">
-              <h1 className="text-3xl">MaxWork Consulting</h1>
-              <UserButton showName />
-            </header> */}
-            <main>
-              {/* <SignedOut>
-                <SignIn routing="hash"></SignIn>
-              </SignedOut>
-              <SignedIn>{children}</SignedIn> */}
-              {children}
-            </main>
+            <Providers>{children}</Providers>
           </body>
         </html>
       </ClerkProvider>

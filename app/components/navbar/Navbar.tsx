@@ -6,7 +6,7 @@ import Container from "../global/Containter";
 export default function NavBar() {
   return (
     <nav className="border-b">
-      <Container className="flex  flex-row justify-between items-center flex-wrap py-8 gap-4">
+      <Container className="flex  max-w-xl flex-row justify-between items-center flex-wrap py-8 gap-4">
         <Logo />
 
         <div className="flex gap-4 items-center">
