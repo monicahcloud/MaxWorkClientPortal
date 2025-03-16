@@ -34,7 +34,7 @@ function JobList() {
           <ComplexButtonContainer currentPage={page} totalPages={totalPages} />
         )}
       </div>
-      <div className="grid md:grid-cols-2  gap-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 ">
         {jobs.map((job) => {
           return <JobCard key={job.id} job={job} />;
         })}
