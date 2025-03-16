@@ -18,11 +18,14 @@ export default function LinksDropdown() {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="rounded-full" variant="outline" size="icon">
+          <Button
+            className="rounded-full w-12 h-12"
+            variant="outline"
+            size="icon">
             <UserButton />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        {/* <DropdownMenuContent align="end">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
@@ -48,7 +51,7 @@ export default function LinksDropdown() {
               </SignOutButton>
             </form>
           </DropdownMenuItem>
-        </DropdownMenuContent>
+        </DropdownMenuContent> */}
       </DropdownMenu>
     </div>
   );

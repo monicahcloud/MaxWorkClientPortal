@@ -1,7 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { File, FilePen, HomeIcon, List, Users2 } from "lucide-react";
+import {
+  Blocks,
+  File,
+  FilePen,
+  FileStack,
+  HomeIcon,
+  List,
+  Users2,
+} from "lucide-react";
 import { nanoid } from "nanoid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,7 +46,13 @@ export const dashboardlinks = [
     id: nanoid(),
     name: "Add A Job",
     href: "/add-job",
-    icon: Users2,
+    icon: Blocks,
+  },
+  {
+    id: nanoid(),
+    name: "Jobs",
+    href: "/jobs",
+    icon: Blocks,
   },
   {
     id: nanoid(),

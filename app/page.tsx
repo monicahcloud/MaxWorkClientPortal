@@ -7,12 +7,9 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Footer from "./components/global/Footer";
-import { SignIn } from "@clerk/nextjs";
 
 export default function Home() {
   return (

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import Logo from "@/public/MaxWorkLogo.png";
 import Image from "next/image";
 import { DashboardLinks } from "../components/global/DashboardLinks";
@@ -10,11 +10,7 @@ import { Toaster } from "@/components/ui/sonner";
 import LinksDropdown from "../components/global/LinksDropdown";
 import DarkMode from "../components/navbar/DarkMode";
 
-export default function Dashboardlayout({
-  children,
-}: {
-  children?: PropsWithChildren;
-}) {
+export default function Dashboardlayout({ children }: PropsWithChildren) {
   return (
     <>
       <main className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -22,7 +18,7 @@ export default function Dashboardlayout({
           <div className="flex flex-col max-h-screen h-full gap-2">
             <div className="h-14 flex items-center border-b px-4 lg:h-[60px] lg:px-6">
               <Link href="/home" className="flex items-center gap-2">
-                <Image src={Logo} alt="Logo" />
+                <Image src={Logo} alt="Logo" priority />
               </Link>
             </div>
             <div className="flex-1">
