@@ -15,9 +15,11 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
+  id    String          @id @default(cuid())
   email String  @unique
   name  String?
+  phone String
+  clerkId String
 }
 
 model Job {
@@ -28,6 +30,13 @@ model Job {
   position    String
   company   String
   location  String
+  salary String
+  mode Mode
   status      String
-  mode     String
+
+}
+enum Mode {
+  FULLTIME
+  PARTTIME
+  INTERSHIP
 }

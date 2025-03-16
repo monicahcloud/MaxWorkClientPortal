@@ -38,7 +38,6 @@ export default function ResumeBuilder() {
     const file = e.target.files[0];
 
     if (file && isAllowed(file)) {
-      const storageRef = ref;
     } else {
       toast.info("Invalid File Format");
     }
