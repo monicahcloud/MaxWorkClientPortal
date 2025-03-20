@@ -22,7 +22,7 @@ export default function RootLayout({
         <body className={inter.className}>
           <Providers>
             {" "}
-            <>{children}</> {/* Ensure a single wrapper */}
+            {children} {/* Ensure a single wrapper */}
           </Providers>
         </body>
       </html>

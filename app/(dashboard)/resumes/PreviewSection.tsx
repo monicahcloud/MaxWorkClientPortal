@@ -1,10 +1,10 @@
 import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
 import React, { useContext } from "react";
-import PersonDetailPreview from "./PersonDetailPreview";
-import SummaryPreview from "./SummaryPreview";
-import ExperiencePreview from "./ExperiencePreview";
-import EducationPreview from "./EducationPreview";
-import SkillPreview from "./SkillPreview";
+import PersonDetailPreview from "./preview/PersonDetailPreview";
+import SummaryPreview from "./preview/SummaryPreview";
+import ExperiencePreview from "./preview/ExperiencePreview";
+import EducationPreview from "./preview/EducationPreview";
+import SkillPreview from "./preview/SkillPreview";
 
 export default function PreviewSection() {
   const { resumeInfo } = useContext(ResumeInfoContext);
@@ -14,15 +14,15 @@ export default function PreviewSection() {
       className="shadow-lg h-full p-14 border-t-[20px]"
       style={{ borderColor: resumeInfo?.themeColor }}>
       {/* Personal Detail */}
-      {/* <PersonDetailPreview resumeInfo={resumeInfo} /> */}
+      <PersonDetailPreview resumeInfo={resumeInfo} />
       {/* Summary */}
-      {/* <SummaryPreview resumeInfo={resumeInfo} /> */}
+      <SummaryPreview resumeInfo={resumeInfo} />
       {/* Professional Experience */}
-      {/* <ExperiencePreview resumeInfo={resumeInfo} /> */}
+      <ExperiencePreview resumeInfo={resumeInfo} />
       {/* Education */}
-      {/* <EducationPreview resumeInfo={resumeInfo} /> */}
+      <EducationPreview resumeInfo={resumeInfo} />
       {/* Skills */}
-      {/* <SkillPreview resumeInfo={resumeInfo} /> */}
+      <SkillPreview resumeInfo={resumeInfo} />
     </div>
   );
 }

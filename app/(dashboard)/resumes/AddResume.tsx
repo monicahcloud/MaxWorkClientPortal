@@ -108,7 +108,7 @@ export default function AddResume() {
             <DialogTitle>Create New Resume</DialogTitle>
             <div className="">
               <DialogDescription>
-                <p>Add a title for your new resume.</p>
+                Add a title for your new resume.
               </DialogDescription>
             </div>
             <Form {...form}>

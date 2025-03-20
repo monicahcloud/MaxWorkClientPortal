@@ -44,19 +44,19 @@ export default function FormSection() {
       </div>
 
       {/* Personal Detail */}
-      {/* {activeFormIndex == 1 ? (
+      {activeFormIndex == 1 ? (
         <PersonalDetails enableNext={(v: boolean) => setEnabledNext(v)} />
-      ) : null} */}
+      ) : null}
       {/* Summary */}
-      {/* {activeFormIndex == 2 ? (
+      {activeFormIndex == 2 ? (
         <Summary enableNext={(v: boolean) => setEnabledNext(v)} />
-      ) : null} */}
+      ) : null}
       {/* Professional Experience */}
-      {/* {activeFormIndex == 3 ? <Experience /> : null} */}
+      {activeFormIndex == 3 ? <Experience /> : null}
       {/* Education */}
-      {/* {activeFormIndex == 4 ? <Education /> : null} */}
+      {activeFormIndex == 4 ? <Education /> : null}
       {/* Skills */}
-      {/* {activeFormIndex == 5 ? <Skills /> : null} */}
+      {activeFormIndex == 5 ? <Skills /> : null}
     </div>
   );
 }

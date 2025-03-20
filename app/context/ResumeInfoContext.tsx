@@ -1,3 +1,4 @@
+import { Education, Experience, Skill } from "@/utils/types";
 import { createContext, useState, ReactNode } from "react";
 
 interface ResumeInfo {
@@ -11,6 +12,10 @@ interface ResumeInfo {
   address?: string;
   phone?: string;
   email?: string;
+  summary?: string | null; // ✅ Now accepts null
+  experience?: Experience[] | null; // ✅ Now accepts null
+  education?: Education[] | null; // ✅ Now accepts null
+  skills?: Skill[] | null; // ✅ Now accepts null
 }
 
 interface ResumeInfoContextType {

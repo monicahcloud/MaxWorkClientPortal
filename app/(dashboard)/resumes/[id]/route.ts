@@ -7,21 +7,18 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    console.log("GET /api/resumes/[id] called with id:", params.id); // Debugging: Log the ID
+    console.log("GET /resumes/[id] called with id:", params.id);
 
     const { userId } = await auth();
-
     if (!userId) {
-      console.log("GET /api/resumes/[id] - Unauthorized: No userId found."); // Debugging: Log unauthorized access
+      console.log("GET /resumes/[id] - Unauthorized: No userId found.");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log("GET /api/resumes/[id] - userId:", userId); // Debugging: Log the userId
+    console.log("GET /resumes/[id] - userId:", userId);
 
     if (!params.id) {
-      console.log(
-        "GET /api/resumes/[id] - Invalid params.id: undefined or null"
-      );
+      console.log("GET /api/resumes/[id] - Invalid params.id");
       return NextResponse.json({ error: "Invalid resume ID" }, { status: 400 });
     }
 
@@ -30,34 +27,20 @@ export async function GET(
     });
 
     if (!resume) {
-      console.log(
-        "GET /api/resumes/[id] - Resume not found for id:",
-        params.id
-      ); // Debugging: Log resume not found
+      console.log("GET /resumes/[id] - Resume not found:", params.id);
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
-    console.log("GET /api/resumes/[id] - Resume found:", resume); // Debugging: Log found resume
-
     if (resume.clerkId !== userId) {
-      console.log(
-        "GET /api/resumes/[id] - Forbidden: clerkId mismatch. Resume clerkId:",
-        resume.clerkId,
-        "userId:",
-        userId
-      ); // Debugging: Log clerkId mismatch
+      console.log("GET /api/resumes/[id] - Forbidden: clerkId mismatch.");
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    console.log("GET /api/resumes/[id] - Returning resume:", resume); // Debugging: Log return
+    console.log("GET /api/resumes/[id] - Returning resume:", resume);
 
-    return NextResponse.json(resume);
+    return NextResponse.json(resume); // ✅ Ensure only one response is sent
   } catch (error: any) {
-    console.error(
-      "GET /api/resumes/[id] - Error fetching resume:",
-      error.message,
-      error.stack
-    ); // Debugging: Detailed error logging
+    console.error("GET /api/resumes/[id] - Error fetching resume:", error);
     return NextResponse.json(
       { error: "Failed to fetch resume" },
       { status: 500 }
@@ -70,22 +53,12 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    console.log("PUT /api/resumes/[id] called with id:", params.id);
+    console.log("📌 PUT /resumes/[id] - Updating resume with ID:", params.id);
 
     const { userId } = await auth();
-
     if (!userId) {
-      console.log("PUT /api/resumes/[id] - Unauthorized: No userId found.");
+      console.log("❌ Unauthorized: No userId found.");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    console.log("PUT /api/resumes/[id] - userId:", userId);
-
-    if (!params.id) {
-      console.log(
-        "PUT /api/resumes/[id] - Invalid params.id: undefined or null"
-      );
-      return NextResponse.json({ error: "Invalid resume ID" }, { status: 400 });
     }
 
     const resume = await prisma.userResume.findUnique({
@@ -93,41 +66,27 @@ export async function PUT(
     });
 
     if (!resume) {
-      console.log(
-        "PUT /api/resumes/[id] - Resume not found for id:",
-        params.id
-      );
+      console.log("❌ Resume Not Found for ID:", params.id);
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
 
     if (resume.clerkId !== userId) {
-      console.log(
-        "PUT /api/resumes/[id] - Forbidden: clerkId mismatch. Resume clerkId:",
-        resume.clerkId,
-        "userId:",
-        userId
-      );
+      console.log("🚫 Forbidden: User ID does not match resume owner.");
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const updatedData = await req.json();
-
-    console.log("PUT /api/resumes/[id] - updatedData:", updatedData);
+    console.log("✏️ Updating Resume with Data:", updatedData);
 
     const updatedResume = await prisma.userResume.update({
       where: { id: params.id },
-      data: updatedData,
+      data: updatedData, // Update fields from user input
     });
 
-    console.log("PUT /api/resumes/[id] - Resume updated:", updatedResume);
-
+    console.log("✅ Resume Updated Successfully:", updatedResume);
     return NextResponse.json(updatedResume);
   } catch (error: any) {
-    console.error(
-      "PUT /api/resumes/[id] - Error updating resume:",
-      error.message,
-      error.stack
-    );
+    console.error("❌ Error Updating Resume:", error);
     return NextResponse.json(
       { error: "Failed to update resume" },
       { status: 500 }

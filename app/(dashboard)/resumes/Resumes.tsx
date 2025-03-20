@@ -34,10 +34,8 @@ export default function Resumes() {
           <AddResume />
 
           {/* Display list of user resumes */}
-          {resumes?.map((resume, index) => (
-            <>
-              <ResumeCard resume={resume} key={index} />
-            </>
+          {resumes?.map((resume) => (
+            <ResumeCard resume={resume} key={resume.id} />
           ))}
         </div>
       </div>

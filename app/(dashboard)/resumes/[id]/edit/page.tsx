@@ -3,10 +3,10 @@
 import { useParams, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@clerk/nextjs";
-import FormSection from "./FormSection";
-import PreviewSection from "./PreviewSection";
 import { ResumeInfoContext } from "@/app/context/ResumeInfoContext";
 import dummy from "@/utils/dummy";
+import FormSection from "../../FormSection";
+import PreviewSection from "../../PreviewSection";
 
 export type Experience = {
   id: number;
@@ -52,7 +52,7 @@ export type Skill = {
   rating: number;
 };
 
-function ResumeBuilder() {
+function EditResume() {
   const { getToken, isSignedIn, userId } = useAuth();
   const params = useParams();
   const router = useRouter();
@@ -68,7 +68,6 @@ function ResumeBuilder() {
       <div className="w-full px-4 lg:px-5 2xl:px-10 py-4 grid grid-cols-1 lg:grid-cols-12">
         <div className="col-span-12 lg:col-span-6 2xl:col-span-6 flex items-center flex-col gap-4 px-2">
           <FormSection />
-          <h1>in the resumebuilder</h1>
         </div>
         <div className="col-span-12 lg:col-span-6 2xl:col-span-6">
           <PreviewSection />
@@ -78,4 +77,4 @@ function ResumeBuilder() {
   );
 }
 
-export default ResumeBuilder;
+export default EditResume;

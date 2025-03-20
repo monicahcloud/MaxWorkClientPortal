@@ -6,9 +6,10 @@ import {
   createAndEditJobSchema,
   createAndEditResumeSchema,
   ResumeInfo,
+  CreateAndEditResumeType,
 } from "./types";
 import { redirect } from "next/navigation";
-import { Prisma } from "@prisma/client";
+import { Prisma, UserResume } from "@prisma/client";
 import { prisma } from "./prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
@@ -252,41 +253,42 @@ export async function getUserResumes() {
   }
 }
 
-// export async function updateResume(
-//   id: string,
-//   values: Partial<CreateAndEditResumeType>
-// ): Promise<UserResume | null> {
-//   const userId = authenticateAndRedirect(); // Ensure the user is authenticated
+export async function updateResume(id: string, updatedData: any) {
+  console.log(`📌 Updating Resume ID: ${id} with Data:`, updatedData);
 
-//   try {
-//     const resume: UserResume = await prisma.userResume.update({
-//       where: {
-//         id,
-//         clerkId: userId, // Ensure the resume belongs to the authenticated user
-//       },
-//       data: {
-//         ...values, // Allow updating specific fields without requiring all of them
-//       },
-//     });
-//     return resume;
-//   } catch (error) {
-//     console.error("Error updating resume:", error);
-//     return null;
-//   }
-// }
+  try {
+    const res = await fetch(`/resumes/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
 
-export async function updateResume(updatedData: ResumeInfo) {
-  const response = await fetch(`/api/resumes/${updatedData.id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedData),
-  });
+    if (!res.ok) {
+      console.error("❌ API Error:", res.status, res.statusText);
+      throw new Error("Failed to update resume");
+    }
 
-  if (!response.ok) {
-    throw new Error("Failed to update resume");
+    const data = await res.json();
+    console.log("✅ Resume Updated Successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("❌ Error Updating Resume:", error);
+    throw error;
   }
-
-  return response.json();
 }
+
+// export async function updateResume(updatedData: ResumeInfo) {
+//   const response = await fetch(`/api/resumes/${updatedData.id}`, {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(updatedData),
+//   });
+
+//   if (!response.ok) {
+//     throw new Error("Failed to update resume");
+//   }
+
+//   return response.json();
+// }
