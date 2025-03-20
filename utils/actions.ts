@@ -253,42 +253,42 @@ export async function getUserResumes() {
   }
 }
 
-export async function updateResume(id: string, updatedData: any) {
-  console.log(`📌 Updating Resume ID: ${id} with Data:`, updatedData);
+// export async function updateResume(id: string, updatedData: any) {
+//   console.log(`📌 Updating Resume ID: ${id} with Data:`, updatedData);
 
-  try {
-    const res = await fetch(`/resumes/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedData),
-    });
+//   try {
+//     const res = await fetch(`/resumes/${id}`, {
+//       method: "PUT",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(updatedData),
+//     });
 
-    if (!res.ok) {
-      console.error("❌ API Error:", res.status, res.statusText);
-      throw new Error("Failed to update resume");
-    }
+//     if (!res.ok) {
+//       console.error("❌ API Error:", res.status, res.statusText);
+//       throw new Error("Failed to update resume");
+//     }
 
-    const data = await res.json();
-    console.log("✅ Resume Updated Successfully:", data);
-    return data;
-  } catch (error) {
-    console.error("❌ Error Updating Resume:", error);
-    throw error;
-  }
-}
-
-// export async function updateResume(updatedData: ResumeInfo) {
-//   const response = await fetch(`/api/resumes/${updatedData.id}`, {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(updatedData),
-//   });
-
-//   if (!response.ok) {
-//     throw new Error("Failed to update resume");
+//     const data = await res.json();
+//     console.log("✅ Resume Updated Successfully:", data);
+//     return data;
+//   } catch (error) {
+//     console.error("❌ Error Updating Resume:", error);
+//     throw error;
 //   }
-
-//   return response.json();
 // }
+
+export async function updateResume(updatedData: ResumeInfo) {
+  const response = await fetch(`/resumes/${updatedData.id}/edit`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedData),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update resume");
+  }
+
+  return response.json();
+}

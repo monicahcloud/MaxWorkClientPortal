@@ -3,19 +3,19 @@ import { createContext, useState, ReactNode } from "react";
 
 interface ResumeInfo {
   themeColor?: string;
-  id: string;
-  clerkId: string;
-  resumeTitle: string;
+  id?: string; // ✅ Allow `id` to be undefined initially
+  clerkId?: string;
+  resumeTitle?: string;
   firstName?: string;
   lastName?: string;
   jobTitle?: string;
   address?: string;
   phone?: string;
   email?: string;
-  summary?: string | null; // ✅ Now accepts null
-  experience?: Experience[] | null; // ✅ Now accepts null
-  education?: Education[] | null; // ✅ Now accepts null
-  skills?: Skill[] | null; // ✅ Now accepts null
+  summary?: string | null;
+  experience?: Experience[] | null;
+  education?: Education[] | null;
+  skills?: Skill[] | null;
 }
 
 interface ResumeInfoContextType {

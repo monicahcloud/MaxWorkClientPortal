@@ -13,6 +13,11 @@ interface PersonalDetailsProps {
 
 const PersonalDetails: React.FC<PersonalDetailsProps> = ({ enableNext }) => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
+  const params = useParams();
+  useEffect(() => {
+    console.log(params);
+  });
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -37,27 +42,15 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({ enableNext }) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
+    setResumeInfo({
+      ...resumeInfo,
       [name]: value,
-    }));
+    });
   };
 
   const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
     enableNext(true);
-    try {
-      const updatedResume = await updateResume({ ...resumeInfo, ...formData });
-      if (updatedResume) {
-        toast.success("Resume updated successfully");
-        setResumeInfo(updatedResume); // ✅ Update context after save
-      } else {
-        toast.error("Failed to update resume");
-      }
-    } catch (error) {
-      console.error("Error updating resume:", error);
-      toast.error("An error occurred while updating the resume");
-    }
   };
 
   return (
@@ -81,6 +74,44 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({ enableNext }) => {
             <Input
               name="lastName"
               value={formData.lastName}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="col-span-2">
+            <Label className="text-sm">Job Title</Label>
+            <Input
+              name="jobTitle"
+              value={formData.jobTitle}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div className="col-span-2">
+            <Label className="text-sm">Address</Label>
+            <Input
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
+          <div>
+            <Label className="text-sm">Phone Number</Label>
+            <Input
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <Label className="text-sm">Email Address</Label>
+            <Input
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
               required
             />
