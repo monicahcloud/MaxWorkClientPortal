@@ -14,8 +14,8 @@ import { nanoid } from "nanoid";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { UserButton } from "@clerk/nextjs";
-import UserIcon from "../navbar/UserIcon";
+import { useUser } from "@clerk/nextjs";
+import Image from "next/image";
 
 export const dashboardlinks = [
   {
@@ -64,15 +64,31 @@ export const dashboardlinks = [
 
 export function DashboardLinks() {
   const pathname = usePathname();
+  const { user } = useUser(); // Get user data from Clerk
+
   return (
     <>
-      <h1 className="text-xl text-primary mx-auto mb-4">Welcome, UserName</h1>
+      <h1 className="text-xl text-primary mx-auto mb-4">
+        Welcome, {user?.firstName || "User"}
+      </h1>
       <Button
-        className="rounded-full text-black flex mx-auto mb-10 w-40 h-40"
+        className="rounded-full flex mx-auto mb-10 w-40 h-40 overflow-hidden p-0 border"
         variant="outline"
         size="lg">
-        <UserIcon />
+        {user?.imageUrl ? (
+          <Image
+            priority
+            src={user.imageUrl}
+            alt="User Profile Picture"
+            width={160}
+            height={160}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <span className="text-gray-500">No Image</span>
+        )}
       </Button>
+
       {dashboardlinks.map((link) => (
         <Link
           className={cn(

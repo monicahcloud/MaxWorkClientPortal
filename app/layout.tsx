@@ -17,14 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <ClerkProvider>
-        <html lang="en" suppressHydrationWarning>
-          <body className={inter.className}>
-            <Providers>{children}</Providers>
-          </body>
-        </html>
-      </ClerkProvider>
-    </>
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <body className={inter.className}>
+          <Providers>
+            {" "}
+            <>{children}</> {/* Ensure a single wrapper */}
+          </Providers>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

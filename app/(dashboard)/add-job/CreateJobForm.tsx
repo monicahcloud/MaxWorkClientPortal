@@ -32,7 +32,6 @@ function CreateJobForm() {
     },
   });
   const queryClient = useQueryClient();
-  // Example of a toast notification
 
   const router = useRouter();
   const { mutate, isPending } = useMutation({
@@ -40,6 +39,7 @@ function CreateJobForm() {
     onSuccess: (data) => {
       if (!data) {
         toast("there was an error");
+        console.log(data);
         return;
       }
       toast("job created");
@@ -48,11 +48,12 @@ function CreateJobForm() {
       queryClient.invalidateQueries({ queryKey: ["charts"] });
 
       router.push("/jobs");
-      // form.reset();
+      form.reset();
     },
   });
 
   function onSubmit(values: CreateAndEditJobType) {
+    console.log(values);
     mutate(values);
   }
 
@@ -69,7 +70,6 @@ function CreateJobForm() {
           <CustomFormField name="company" control={form.control} />
           {/* location */}
           <CustomFormField name="location" control={form.control} />
-
           {/* job status */}
           <CustomFormSelect
             name="status"
@@ -84,13 +84,11 @@ function CreateJobForm() {
             labelText="job mode"
             items={Object.values(JobMode)}
           />
-
           <Button
             type="submit"
             className="self-end capitalize "
             disabled={isPending}>
             {isPending ? "loading" : "create job"}
-            create job
           </Button>
         </div>
       </form>

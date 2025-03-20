@@ -1,28 +1,22 @@
-import React from "react";
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-
 import { getUserResumes } from "@/utils/actions";
-import Resumes from "./Resumes";
+import Resumes from "../Resumes";
+// Import your client component
 
-export default async function ResumesList() {
+export default async function ResumesPage() {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["userResumes"],
     queryFn: getUserResumes,
   });
+
   return (
-    <>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <div>
-          <div>
-            <Resumes />
-          </div>
-        </div>
-      </HydrationBoundary>
-    </>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Resumes />
+    </HydrationBoundary>
   );
 }

@@ -12,6 +12,14 @@ export type JobType = {
   mode: string;
 };
 
+export type ResumeType = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  clerkId: string;
+  resumeTitle: string;
+};
+
 export enum JobStatus {
   Pending = "pending",
   Interview = "interview",
@@ -19,9 +27,9 @@ export enum JobStatus {
 }
 
 export enum JobMode {
-  FullTime = "full-time",
-  PartTime = "part-time",
-  Internship = "internship",
+  FullTime = "FULLTIME",
+  PartTime = "PARTTIME",
+  Internship = "INTERSHIP",
 }
 
 export const createAndEditJobSchema = z.object({
@@ -39,3 +47,79 @@ export const createAndEditJobSchema = z.object({
 });
 
 export type CreateAndEditJobType = z.infer<typeof createAndEditJobSchema>;
+
+export type actionFunction = (
+  prevState: unknown,
+  formData: FormData
+) => Promise<{ message: string }>;
+
+export type CreateAndEditResumeType = {
+  resumeTitle: string;
+  firstName?: string;
+  lastName?: string;
+  jobTitle?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  userName?: string;
+  userEmail?: string;
+};
+
+export const createAndEditResumeSchema = z.object({
+  resumeTitle: z.string().min(2, {
+    message: "Resume title must be at least 2 characters.",
+  }),
+  firstName: z.string().min(2).optional(),
+  lastName: z.string().min(2).optional(),
+  address: z.string().min(2).optional(),
+  jobTitle: z.string().min(2).optional(),
+  phone: z.string().min(2).optional(),
+  email: z.string().min(2).optional(),
+  userName: z.string().optional(),
+  userEmail: z.string().optional(),
+});
+
+export type Experience = {
+  id: number;
+  title: string;
+  companyName: string;
+  city: string;
+  state: string;
+  startDate: string;
+  endDate: string;
+  currentlyWorking: boolean;
+  workSummary: string;
+};
+
+export type Education = {
+  id: number;
+  universityName: string;
+  startDate: string;
+  endDate: string;
+  degree: string;
+  major: string;
+  description: string;
+};
+
+export type Skill = {
+  id: number;
+  name: string;
+  rating: number;
+};
+
+export type ResumeInfo = {
+  id: string;
+  clerkId: string;
+  resumeTitle: string;
+  firstName?: string | null; // ✅ Now accepts null
+  lastName?: string | null; // ✅ Now accepts null
+  jobTitle?: string | null; // ✅ Now accepts null
+  address?: string | null; // ✅ Now accepts null
+  phone?: string | null; // ✅ Now accepts null
+  email?: string | null; // ✅ Now accepts null
+  themeColor?: string | null; // ✅ Now accepts null
+  summary?: string | null; // ✅ Now accepts null
+  experience?: Experience[] | null; // ✅ Now accepts null
+  education?: Education[] | null; // ✅ Now accepts null
+  skills?: Skill[] | null; // ✅ Now accepts null
+};
