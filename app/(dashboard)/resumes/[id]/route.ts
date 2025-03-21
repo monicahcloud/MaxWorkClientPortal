@@ -53,8 +53,6 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    console.log("📌 PUT /resumes/[id] - Updating resume with ID:", params.id);
-
     const { userId } = await auth();
     if (!userId) {
       console.log("❌ Unauthorized: No userId found.");

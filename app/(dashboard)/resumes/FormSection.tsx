@@ -13,14 +13,12 @@ export default function FormSection() {
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnabledNext] = useState(false);
 
-  console.log("FormSection data:", resumeInfo);
   if (resumeInfo) {
-    console.log("FormSection firstName:", resumeInfo.firstName);
     //add logs for any other data being used.
   }
   return (
-    <div>
-      <div className="flex mx-3 justify-between items-center">
+    <div className="w-full mx-auto items-center">
+      <div className="flex justify-between w-full items-center">
         <Button variant="outline" size="sm" className="flex gap-2">
           <LayoutGrid /> Theme
         </Button>

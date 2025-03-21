@@ -15,7 +15,7 @@ function ResumeCard({ resume }: ResumeCardProps) {
   return (
     <Link href={`/resumes/${resume.id}/edit`}>
       {/* Card container with padding and background style */}
-      <div className="p-14 bg-secondary items-center justify-center border rounded-lg border-primary h-[280px] hover:scale-105 transion-all hover:shadow-md shadow-primary">
+      <div className="p-14 bg-secondary  flex items-center justify-center border rounded-lg border-primary h-[280px] hover:scale-105 transion-all hover:shadow-md shadow-primary">
         {/* Displaying the Notebook icon */}
         <Notebook />
       </div>

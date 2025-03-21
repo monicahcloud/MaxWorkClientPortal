@@ -1,9 +1,10 @@
 import React from "react";
+import Resources from "./Resources";
 
-export default function Resources() {
+export default function ResourcePage() {
   return (
     <div>
-      <h1 className="text-black">Resources</h1>
+      <Resources />
     </div>
   );
 }

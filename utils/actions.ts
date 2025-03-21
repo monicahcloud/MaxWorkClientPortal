@@ -253,6 +253,39 @@ export async function getUserResumes() {
   }
 }
 
+export async function updateResume(resumeId: string, updatedData: any) {
+  try {
+    const updatedResume = await prisma.userResume.update({
+      where: { id: resumeId },
+      data: updatedData,
+    });
+
+    // ✅ Convert null values to undefined
+    return Object.fromEntries(
+      Object.entries(updatedResume).map(([key, value]) => [
+        key,
+        value === null ? undefined : value,
+      ])
+    );
+  } catch (error) {
+    console.error("❌ Prisma Error updating resume:", error);
+    throw new Error("Failed to update resume");
+  }
+}
+
+export async function getSingleResume(resumeId: string) {
+  try {
+    const resume = await prisma.userResume.findUnique({
+      where: { id: resumeId },
+    });
+
+    return resume;
+  } catch (error) {
+    console.error("Error fetching single resume:", error);
+    return null;
+  }
+}
+
 // export async function updateResume(id: string, updatedData: any) {
 //   console.log(`📌 Updating Resume ID: ${id} with Data:`, updatedData);
 
@@ -277,18 +310,18 @@ export async function getUserResumes() {
 //   }
 // }
 
-export async function updateResume(updatedData: ResumeInfo) {
-  const response = await fetch(`/resumes/${updatedData.id}/edit`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updatedData),
-  });
+// export async function updateResume(updatedData: ResumeInfo) {
+//   const response = await fetch(`/resumes/${updatedData.id}/edit`, {
+//     method: "PUT",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(updatedData),
+//   });
 
-  if (!response.ok) {
-    throw new Error("Failed to update resume");
-  }
+//   if (!response.ok) {
+//     throw new Error("Failed to update resume");
+//   }
 
-  return response.json();
-}
+//   return response.json();
+// }

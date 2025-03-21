@@ -66,7 +66,7 @@ function ResumeBuilder() {
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
       <div className="w-full px-4 lg:px-5 2xl:px-10 py-4 grid grid-cols-1 lg:grid-cols-12">
-        <div className="col-span-12 lg:col-span-6 2xl:col-span-6 flex items-center flex-col gap-4 px-2">
+        <div className="col-span-12 lg:col-span-6 2xl:col-span-6 ">
           <FormSection />
           <h1>in the resumebuilder</h1>
         </div>

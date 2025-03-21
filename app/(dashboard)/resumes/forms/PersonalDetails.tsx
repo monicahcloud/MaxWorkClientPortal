@@ -6,6 +6,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { updateResume } from "@/utils/actions";
 import { toast } from "sonner";
+import { LoaderCircle } from "lucide-react";
 
 interface PersonalDetailsProps {
   enableNext: (value: boolean) => void;
@@ -13,10 +14,10 @@ interface PersonalDetailsProps {
 
 const PersonalDetails: React.FC<PersonalDetailsProps> = ({ enableNext }) => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
+
+  const [loading, setLoading] = useState(false);
   const params = useParams();
-  useEffect(() => {
-    console.log(params);
-  });
+  const resumeId = params?.resumeId; // Extract resumeId
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -39,9 +40,13 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({ enableNext }) => {
       });
     }
   }, [resumeInfo]);
+  useEffect(() => {
+    console.log("Params from useParams():", params); // Debugging
+  }, [params]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    enableNext(false);
     setResumeInfo({
       ...resumeInfo,
       [name]: value,
@@ -50,11 +55,35 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({ enableNext }) => {
 
   const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    enableNext(true);
+    setLoading(true);
+
+    const resumeId = Array.isArray(params?.resumeId)
+      ? params.resumeId[0]
+      : params?.resumeId || resumeInfo?.id;
+    console.log(params.resumeId);
+    if (!resumeId) {
+      toast.error("Resume ID is missing");
+      setLoading(false);
+      return;
+    }
+    console.log("Personal Details", resumeId);
+    try {
+      const updatedResume = await updateResume(resumeId, formData);
+
+      if (updatedResume) {
+        setResumeInfo(updatedResume); // ✅ Update state/context
+        toast.success("Details updated successfully");
+        enableNext(true);
+      }
+    } catch (error) {
+      toast.error("Failed to update details");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-5 shadow-lg rounded-lg border-red-700 border-t-4 mt-10">
+    <div className="p-5 shadow-lg rounded-lg w-full border-red-700 border-t-4 mt-10">
       <h2 className="font-bold text-lg">Personal Detail</h2>
       <p>Get Started with your basic information</p>
 
@@ -118,7 +147,9 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({ enableNext }) => {
           </div>
         </div>
         <div className="mt-3 flex justify-end">
-          <Button type="submit">Save</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
+          </Button>
         </div>
       </form>
     </div>

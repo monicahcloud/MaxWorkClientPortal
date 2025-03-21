@@ -60,13 +60,17 @@ function EditResume() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("EditResume Params", params);
     setResumeInfo(dummy);
   }, []);
 
   return (
     <ResumeInfoContext.Provider value={{ resumeInfo, setResumeInfo }}>
-      <div className="w-full px-4 lg:px-5 2xl:px-10 py-4 grid grid-cols-1 lg:grid-cols-12">
+      <div className="w-full justify-center gap-10 lg:px-5 2xl:px-10 py-4 grid grid-cols-1 lg:grid-cols-12">
         <div className="col-span-12 lg:col-span-6 2xl:col-span-6 flex items-center flex-col gap-4 px-2">
+          <h1 className="text-3xl font-bold tracking-wide ">
+            Build Your Resume
+          </h1>
           <FormSection />
         </div>
         <div className="col-span-12 lg:col-span-6 2xl:col-span-6">
