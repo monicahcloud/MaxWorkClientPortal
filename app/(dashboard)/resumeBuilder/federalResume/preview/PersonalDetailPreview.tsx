@@ -15,7 +15,7 @@ function PersonalDetailPreview() {
   return (
     <div className="mb-6 flex flex-col text-center">
       {/* Logo + Name */}
-      <div className="flex items-center gap-4 justify-center">
+      <div className="flex items-center gap-4 ">
         <Image
           src={fedlogo}
           alt="Federal Logo"
@@ -24,7 +24,7 @@ function PersonalDetailPreview() {
           className="rounded-full object-contain"
           priority
         />
-        <h1 className="text-4xl font-semibold capitalize">{fullName}</h1>
+        <h1 className="text-4xl ml-25 font-semibold capitalize">{fullName}</h1>
       </div>
 
       {/* Job Title */}

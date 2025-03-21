@@ -47,5 +47,93 @@ model Job {
 enum Mode {
   FULLTIME
   PARTTIME
-  INTERSHIP
+  INTERNSHIP
 }
+
+model Resume {
+  id             String          @id @default(uuid())
+  userId         String          // ✅ ONE place to hold the user ID
+  title          String
+  createdAt      DateTime        @default(now())
+
+  personalInfo   PersonalInfo?
+  experiences    Experience[]
+  education      Education[]
+  skills         Skill[]
+  certifications Certification[]   // ✅ New
+  achievements   Achievement[]     // ✅ New
+  summary        Summary?
+}
+
+model PersonalInfo {
+  id         String   @id @default(uuid())
+  resumeId   String   @unique
+  resume     Resume   @relation(fields: [resumeId], references: [id])
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  address    String
+  website    String
+  department String
+  jobTitle   String
+}
+
+model Experience {
+  id          String   @id @default(uuid())
+  resumeId    String
+  resume      Resume   @relation(fields: [resumeId], references: [id])
+  company     String
+  role        String
+  startDate   DateTime
+  endDate     DateTime
+  description String
+}
+
+model Education {
+  id         String   @id @default(uuid())
+  resumeId   String
+  resume     Resume   @relation(fields: [resumeId], references: [id])
+  school     String
+  degree     String
+  field      String
+  startYear  Int
+  endYear    Int
+}
+
+model Skill {
+  id        String   @id @default(uuid())
+  resumeId  String
+  resume    Resume   @relation(fields: [resumeId], references: [id])
+  name      String
+  level     String
+}
+
+model Summary {
+  id        String   @id @default(uuid())
+  resumeId  String   @unique
+  resume    Resume   @relation(fields: [resumeId], references: [id])
+  text      String
+}
+
+model Certification {
+  id           String   @id @default(uuid())
+  resumeId     String
+  resume       Resume   @relation(fields: [resumeId], references: [id])
+  title        String
+  issuer       String
+  issueDate    DateTime
+  expirationDate DateTime?
+  credentialId String?
+  credentialUrl String?
+}
+
+model Achievement {
+  id         String   @id @default(uuid())
+  resumeId   String
+  resume     Resume   @relation(fields: [resumeId], references: [id])
+  title      String
+  description String
+  date       DateTime
+}
+
