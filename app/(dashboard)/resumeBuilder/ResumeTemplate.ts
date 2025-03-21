@@ -1,0 +1,51 @@
+// ✅ Define Resume Template Type
+export interface ResumeTemplate {
+  title: string;
+  image: string;
+  href: string;
+  description: string[];
+}
+
+// ✅ Resume Templates Data
+export const resumeTemplates: ResumeTemplate[] = [
+  {
+    title: "Federal Resume",
+    image: "/federalTemplate.png",
+    href: "/resumeBuilder/federalResume",
+    description: [
+      "Used For: Government jobs and civil service positions.",
+      "Key Features: Detailed job history, duties, accomplishments.",
+      "Style: Formal, structured, follows federal hiring rules.",
+    ],
+  },
+  {
+    title: "Chronological Resume",
+    image: "/federalTemplate.png",
+    href: "/resumeBuilder/chronologicalResume",
+    description: [
+      "Used For: Job seekers with solid work history.",
+      "Key Features: Lists experience in reverse order.",
+      "Style: Clean, professional, and easy to read.",
+    ],
+  },
+  {
+    title: "Functional Resume",
+    image: "/federalTemplate.png",
+    href: "/resumeBuilder/functionalResume",
+    description: [
+      "Used For: Career changers or employment gaps.",
+      "Key Features: Focuses on skills over job history.",
+      "Style: Structured by skill categories.",
+    ],
+  },
+  {
+    title: "Combination Resume",
+    image: "/federalTemplate.png",
+    href: "/resumeBuilder/combinationResume",
+    description: [
+      "Used For: Experienced professionals.",
+      "Key Features: Mix of skills and work experience.",
+      "Style: Best of both worlds—skills & timeline.",
+    ],
+  },
+];
