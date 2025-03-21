@@ -8,8 +8,8 @@ import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 function PersonalDetailPreview() {
   const { personalInfo } = useResumeBuilder();
 
-  const fullName = `${personalInfo.firstName || "First Name"} ${
-    personalInfo.lastName || "Last Name"
+  const fullName = `${personalInfo.firstName || "Jane"} ${
+    personalInfo.lastName || "Johnson, MBA"
   }`;
 
   return (

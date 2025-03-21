@@ -6,11 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { LoaderCircle } from "lucide-react";
 import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
+import { toast } from "sonner"; // ✅ Import from sonner
 
-function PersonalDetailsForm() {
+interface Props {
+  onComplete: () => void;
+}
+
+const PersonalDetailsForm: React.FC<Props> = ({ onComplete }) => {
   const [loading, setLoading] = React.useState(false);
 
-  // ⬇️ Get data and updater from context
   const { personalInfo, setPersonalInfo } = useResumeBuilder();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,15 +22,44 @@ function PersonalDetailsForm() {
     setPersonalInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSave = (e: React.FormEvent) => {
+  const onSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    console.log("Saved Personal Info:", personalInfo);
-    setTimeout(() => setLoading(false), 1000);
+
+    try {
+      const resumeId = new URLSearchParams(window.location.search).get(
+        "resumeId"
+      );
+
+      if (!resumeId) {
+        toast.error("Missing resume ID."); // ❌ Show error via Sonner
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch("/api/resume/personal-info", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeId, ...personalInfo }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("Personal info saved successfully!"); // ✅ Success toast
+        onComplete();
+      } else {
+        toast.error(data.error || "Something went wrong saving your info."); // ❌ Error toast
+      }
+    } catch (err) {
+      toast.error("Unable to save personal info. Please try again."); // ❌ General error
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="p-5 shadow-lg rounded-lg w-full border-red-700 border-t-4 mt-10">
+    <div className="p-5 shadow-lg rounded-lg w-full border-blue-700 border-t-4 mt-10">
       <h2 className="font-bold text-lg">Personal Detail</h2>
       <p>Get Started with your basic information</p>
 
@@ -105,6 +138,7 @@ function PersonalDetailsForm() {
             />
           </div>
         </div>
+
         <div className="mt-3 flex justify-end">
           <Button type="submit" disabled={loading}>
             {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
@@ -113,6 +147,6 @@ function PersonalDetailsForm() {
       </form>
     </div>
   );
-}
+};
 
 export default PersonalDetailsForm;
