@@ -6,21 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Brain, LoaderCircle } from "lucide-react";
 import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 import { toast } from "sonner";
+import { AIchatSession } from "@/utils/AIModal";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   onComplete: () => void;
 }
 
+const prompt =
+  "JobTitle: {jobTitle}, Depends on job title give me summary for my resume within 4-5 lines. Give me the response in this format: { entry: 'entry level summary', mid: 'mid level summary', expert: 'expert level summary'}";
+
 const Summary: React.FC<Props> = ({ onComplete }) => {
-  const { summary, setSummary } = useResumeBuilder();
+  const { summary, setSummary, personalInfo } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
-  const [generating, setGenerating] = useState(false);
   const [summaryOptions, setSummaryOptions] = useState<{
     entry: string;
     mid: string;
     expert: string;
   } | null>(null);
-
   const resumeId = new URLSearchParams(window.location.search).get("resumeId");
 
   const handleSave = async () => {
@@ -49,48 +52,26 @@ const Summary: React.FC<Props> = ({ onComplete }) => {
     setLoading(false);
   };
 
-  const generateWithAI = async () => {
-    if (!resumeId) {
-      toast.error("Missing resume ID");
-      return;
+  const GenerateSummaryFromAI = async () => {
+    setLoading(true);
+    if (!personalInfo.jobTitle) {
+      toast.error("Please enter a job title first");
     }
 
-    setGenerating(true);
+    const PROMPT = prompt.replace("{jobTitle}", personalInfo.jobTitle);
+    console.log(PROMPT);
 
     try {
-      const res = await fetch("/api/resume/summary/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeId }),
-      });
-
-      const data = await res.json();
-      const content: string = data.fullResponse;
-
-      const entry = content
-        .match(/Entry[- ]?Level:?(.+?)Mid[- ]?Level:/s)?.[1]
-        ?.trim();
-      const mid = content
-        .match(/Mid[- ]?Level:?(.+?)Expert[- ]?Level:/s)?.[1]
-        ?.trim();
-      const expert = content.match(/Expert[- ]?Level:?(.+)/s)?.[1]?.trim();
-
-      setSummaryOptions({
-        entry: entry ?? "Entry-level summary not found.",
-        mid: mid ?? "Mid-level summary not found.",
-        expert: expert ?? "Expert-level summary not found.",
-      });
-
-      if (!entry || !mid || !expert) {
-        toast.warning(
-          "Some summary levels couldn't be generated. Please review them."
-        );
-      }
-    } catch (err) {
-      toast.error("Failed to generate summary.");
-      console.error("AI error:", err);
+      const result = await AIchatSession.sendMessage(PROMPT);
+      const parsedData = JSON.parse(result.response.text());
+      console.log(parsedData);
+      setSummaryOptions(parsedData);
+    } catch (error) {
+      console.error("Error generating summary:", error);
+      toast.error("Failed to generate summary from AI.");
+      setSummaryOptions(null);
     } finally {
-      setGenerating(false);
+      setLoading(false);
     }
   };
 
@@ -103,15 +84,15 @@ const Summary: React.FC<Props> = ({ onComplete }) => {
           variant="outline"
           type="button"
           size="sm"
-          disabled={generating}
-          onClick={generateWithAI}
+          disabled={loading}
+          onClick={GenerateSummaryFromAI}
           className="border-primary text-primary flex gap-2">
-          {generating ? (
+          {loading ? (
             <LoaderCircle className="animate-spin w-4 h-4" />
           ) : (
             <Brain className="h-4 w-4" />
           )}
-          {generating ? "Generating..." : "Generate from AI"}
+          {loading ? "Generating..." : "Generate from AI"}
         </Button>
       </div>
 
@@ -124,36 +105,18 @@ const Summary: React.FC<Props> = ({ onComplete }) => {
 
       {summaryOptions && (
         <div className="mt-4 space-y-3">
-          <h3 className="text-sm font-medium text-gray-700">AI Suggestions</h3>
+          <h3 className="text-sm font-medium text-blue-700">
+            Gemini AI Suggestions
+          </h3>
           <div className="grid gap-3">
-            {Object.entries(summaryOptions).map(([label, text]) => (
+            {Object.entries(summaryOptions).map(([level, text]) => (
               <div
-                key={label}
-                className="border p-3 rounded-md bg-white hover:bg-gray-50 cursor-pointer transition"
-                onClick={async () => {
-                  setSummary(text);
-
-                  try {
-                    const res = await fetch("/api/resume/summary", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ resumeId, content: text }),
-                    });
-
-                    if (res.ok) {
-                      toast.success(`${label} summary saved to resume!`);
-                    } else {
-                      const data = await res.json();
-                      toast.error(data.error || "Failed to save summary.");
-                    }
-                  } catch (err) {
-                    console.error(err);
-                    toast.error("Error saving summary.");
-                  }
-                }}>
-                <p className="text-xs text-gray-500 capitalize mb-1">
-                  {label} Level
-                </p>
+                key={uuidv4()}
+                className="bg-white rounded-md p-4 shadow-md transition-shadow hover:shadow-lg cursor-pointer"
+                onClick={() => setSummary(text)}>
+                <h4 className="text-sm font-semibold capitalize mb-2">
+                  {level} Level
+                </h4>
                 <p className="text-sm text-gray-800 whitespace-pre-line">
                   {text}
                 </p>
