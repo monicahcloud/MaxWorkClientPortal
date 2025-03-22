@@ -15,7 +15,7 @@ function PersonalDetailPreview() {
   return (
     <div className="mb-6 flex flex-col text-center">
       {/* Logo + Name */}
-      <div className="flex items-center gap-4 ">
+      <div className="flex items-center ">
         <Image
           src={fedlogo}
           alt="Federal Logo"
@@ -24,17 +24,17 @@ function PersonalDetailPreview() {
           className="rounded-full object-contain"
           priority
         />
-        <h1 className="text-4xl ml-25 font-semibold capitalize">{fullName}</h1>
+        <h1 className="text-3xl ml-31 font-semibold capitalize">{fullName}</h1>
       </div>
 
       {/* Job Title */}
-      <h2 className="text-xl font-bold text-gray-800 mt-2">
+      <h2 className="text-lg font-bold text-gray-800 ">
         {personalInfo.jobTitle || "Director of Finance"}
       </h2>
 
       {/* Address + Department */}
-      <div className="mt-1">
-        <h2 className="text-lg font-medium text-gray-700">
+      <div className="">
+        <h2 className="text-md font-medium text-gray-700">
           {personalInfo.address || "1234 Main St, Anytown, MA 12345"}
         </h2>
         <h2 className="text-md font-normal text-gray-600">
