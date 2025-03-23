@@ -77,7 +77,7 @@ const Summary: React.FC<Props> = ({ onComplete }) => {
 
   return (
     <div className="p-6 border-t-4 border-blue-600 bg-gray-50 rounded-md shadow">
-      <h2 className="text-lg font-semibold mb-2">Professional Summary</h2>
+      <h2 className="text-xl font-bold mb-2 uppercase">Professional Summary</h2>
 
       <div className="flex justify-end items-end mb-5">
         <Button

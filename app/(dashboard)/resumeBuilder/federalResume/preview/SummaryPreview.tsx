@@ -10,7 +10,7 @@ function SummaryPreview() {
 
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-bold mb-2">Professional Summary</h1>
+      <h1 className="text-xl font-bold mb-2 uppercase">Professional Summary</h1>
       <p className="text-sm text-gray-700 whitespace-pre-line">
         {summary.trim() ? summary : placeholder}
       </p>

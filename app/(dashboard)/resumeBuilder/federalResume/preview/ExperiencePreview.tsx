@@ -7,7 +7,7 @@ function ExperiencePreview() {
 
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-bold mb-2">Experience</h1>
+      <h1 className="text-xl font-bold mb-2 uppercase">Experience</h1>
       <hr />
 
       {experiences.map((exp, index) => (

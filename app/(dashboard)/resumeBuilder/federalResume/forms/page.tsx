@@ -8,10 +8,9 @@ import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
 
 import Summary from "./Summary";
 import Experience from "./Experience";
-import Education from "./EducationForm";
-import Skills from "./Skills";
 import PersonalDetailsForm from "./PersonalDetailsForm"; // ✅ This is imported, not declared here
 import EducationComponent from "./EducationComponent";
+import CertificationComponent from "./CertificationComponent";
 
 export default function FormSection() {
   const { resumeInfo } = useContext(ResumeInfoContext);
@@ -56,7 +55,7 @@ export default function FormSection() {
       {activeFormIndex === 4 && (
         <EducationComponent onComplete={() => setEnabledNext(true)} />
       )}
-      {activeFormIndex === 5 && <Skills />}
+      {activeFormIndex === 5 && <CertificationComponent />}
     </div>
   );
 }

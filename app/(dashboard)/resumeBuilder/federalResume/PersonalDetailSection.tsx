@@ -3,7 +3,7 @@
 import React from "react";
 import PersonalDetailsForm from "./forms/PersonalDetailsForm";
 import PersonalDetailPreview from "./preview/PersonalDetailPreview";
-import Skills from "./preview/SkillsPreview";
+import Skills from "./preview/CertificationPreview";
 import Experience from "./preview/ExperiencePreview";
 
 const PersonalDetailSection = () => {

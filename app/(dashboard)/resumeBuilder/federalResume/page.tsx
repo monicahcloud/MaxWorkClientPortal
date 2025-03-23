@@ -3,7 +3,7 @@
 import React from "react";
 
 import PreviewSectionPage from "./PreviewSection";
-import FormSectionPage from "./FormSection";
+import FormSectionPage from "./FormSectionPage";
 function FederalResume() {
   return (
     <div className="w-full px-4 lg:px-8 2xl:px-12 py-8">

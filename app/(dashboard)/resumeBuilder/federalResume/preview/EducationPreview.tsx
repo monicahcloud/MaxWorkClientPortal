@@ -1,24 +1,12 @@
 import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 import React from "react";
 
-interface Education {
-  school: string;
-  degree: string;
-  field: string;
-  startYear: number;
-  endYear?: number;
-}
-
-interface EducationPreviewProps {
-  education: Education[];
-}
-
 function EducationPreview() {
   const { education } = useResumeBuilder();
 
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-bold mb-2">Education</h1>
+      <h1 className="text-xl font-bold mb-2 uppercase">Education</h1>
       <hr />
       {education.map((edu, index) => (
         <div key={index} className="my-5">

@@ -3,6 +3,7 @@ import PersonalDetailPreview from "./preview/PersonalDetailPreview";
 import SummaryPreview from "./preview/SummaryPreview";
 import Experience from "./preview/ExperiencePreview";
 import EducationPreview from "./preview/EducationPreview";
+import CertificationPreview from "./preview/CertificationPreview";
 
 export default function PreviewSectionPage() {
   return (
@@ -16,6 +17,7 @@ export default function PreviewSectionPage() {
             <SummaryPreview />
             <Experience />
             <EducationPreview /> {/* Render the preview */}
+            <CertificationPreview />
           </div>
         </div>
       </section>

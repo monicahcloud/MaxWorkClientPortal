@@ -67,7 +67,9 @@ function ExperienceForm({
   return (
     <div className="border p-4 rounded-md mt-4 bg-white">
       <div className="flex justify-between items-center mb-2">
-        <h2 className="text-lg font-semibold">Experience #{index + 1}</h2>
+        <h2 className="text-xl font-bold mb-2 uppercase">
+          Experience #{index + 1}
+        </h2>
         <Button variant="destructive" size="sm" onClick={() => onRemove(index)}>
           Remove
         </Button>
