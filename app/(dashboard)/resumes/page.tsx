@@ -31,20 +31,18 @@ export default function ResumesPage() {
         {resumes.map((resume) => (
           <Link key={resume.id} href={`/resumes/${resume.id}/edit`}>
             {/* Card container with padding and background style */}
-            <div className="p-14 bg-gradient-to-b from-pink-100 via-purple-200 to-blue-200 flex items-center justify-center border rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
-              {/* Displaying the Notebook icon */}
-              {/* <Notebook /> */}
+            <div className="p-14 bg-gradient-to-b from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center justify-center border rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
+              {/* Displaying the title on top of the logo */}
+              <h2 className="text-center text-xl my-2">{resume.title}</h2>
               <Image
                 priority
                 src="/fedlogo.png"
                 alt="thumbnail"
-                width={100} // Adjust width as needed
-                height={100} // Adjust height as needed
-                objectFit="contain" // Or "cover", etc., depending on how you want the image to fit
+                width={100}
+                height={100}
+                objectFit="contain"
               />
             </div>
-            {/* Rendering the title of the resume */}
-            <h2 className="text-center my-1">{resume.title}</h2>
           </Link>
         ))}
       </div>
