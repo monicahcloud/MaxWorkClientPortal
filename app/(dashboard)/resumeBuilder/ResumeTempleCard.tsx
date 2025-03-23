@@ -45,7 +45,11 @@ const ResumeTemplateCard: React.FC<ResumeTemplateCardProps> = ({
 
       if (res.ok && data?.id) {
         // Redirect with resumeId
-        router.push(`${template.href}?resumeId=${data.id}`);
+        router.push(
+          `${template.href}?resumeId=${
+            data.id
+          }&resumeTitle=${encodeURIComponent(resumeTitle)}`
+        );
       } else {
         console.error("Failed to create resume", data);
       }

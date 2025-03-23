@@ -1,28 +1,53 @@
-import React from "react";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+"use client";
 
-import { getUserResumes } from "@/utils/actions";
-import Resumes from "../resumeBuilder/Resumes";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { Notebook } from "lucide-react"; // Assuming you have lucide-react installed
+import Image from "next/image";
+export default function ResumesPage() {
+  const [resumes, setResumes] = useState([]);
 
-export default async function ResumesList() {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["userResumes"],
-    queryFn: getUserResumes,
-  });
+  useEffect(() => {
+    async function fetchResumes() {
+      try {
+        const response = await fetch("/api/resumes");
+        if (!response.ok) {
+          throw new Error("Failed to fetch resumes.");
+        }
+        const data = await response.json();
+        console.log("Resumes data:", data);
+        setResumes(data);
+      } catch (error) {
+        console.error("Error fetching resumes:", error);
+      }
+    }
+    fetchResumes();
+  }, []);
+
   return (
-    <>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <div>
-          <div>
-            <Resumes />
-          </div>
-        </div>
-      </HydrationBoundary>
-    </>
+    <div className="p-10 md:px-20 lg:px-32">
+      <h2 className="font-bold text-3xl">My Resumes</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-10 gap-5">
+        {resumes.map((resume) => (
+          <Link key={resume.id} href={`/resumes/${resume.id}/edit`}>
+            {/* Card container with padding and background style */}
+            <div className="p-14 bg-gradient-to-b from-pink-100 via-purple-200 to-blue-200 flex items-center justify-center border rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
+              {/* Displaying the Notebook icon */}
+              {/* <Notebook /> */}
+              <Image
+                priority
+                src="/fedlogo.png"
+                alt="thumbnail"
+                width={100} // Adjust width as needed
+                height={100} // Adjust height as needed
+                objectFit="contain" // Or "cover", etc., depending on how you want the image to fit
+              />
+            </div>
+            {/* Rendering the title of the resume */}
+            <h2 className="text-center my-1">{resume.title}</h2>
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }

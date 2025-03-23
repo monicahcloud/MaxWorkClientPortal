@@ -57,7 +57,10 @@ const PersonalDetailsForm: React.FC<Props> = ({ onComplete }) => {
       setLoading(false);
     }
   };
-
+  // Function to extract personal details
+  const getPersonalDetails = () => {
+    return personalInfo;
+  };
   return (
     <div className="p-5 shadow-lg rounded-lg w-full border-blue-700 border-t-4 mt-10">
       <h2 className="font-bold text-lg">Personal Detail</h2>

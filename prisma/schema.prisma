@@ -55,7 +55,7 @@ model Resume {
   userId         String          // ✅ ONE place to hold the user ID
   title          String
   createdAt      DateTime        @default(now())
-
+  thumbnailData  Json?           // Add this line
   personalInfo   PersonalInfo?
   experiences    Experience[]
   education      Education[]
@@ -95,8 +95,6 @@ model Experience {
   time           String?
   resumeId       String // optional
 }
-
-
 
 model Education {
   id         String   @id @default(uuid())
@@ -144,4 +142,3 @@ model Achievement {
   description String
   date       DateTime
 }
-
