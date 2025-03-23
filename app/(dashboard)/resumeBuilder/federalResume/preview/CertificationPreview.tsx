@@ -3,6 +3,14 @@ import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 
 function CertificationPreview() {
   const { certifications } = useResumeBuilder();
+  // Check if there are any certifications with actual data
+  const hasCertifications = certifications.some(
+    (cert) => cert.title || cert.issuer || cert.issueDate || cert.expirationDate
+  );
+
+  if (!hasCertifications) {
+    return null; // Don't render anything if no certifications with data
+  }
 
   return (
     <div className="mb-6">

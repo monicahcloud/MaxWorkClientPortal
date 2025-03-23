@@ -11,9 +11,9 @@ import Experience from "./Experience";
 import PersonalDetailsForm from "./PersonalDetailsForm"; // ✅ This is imported, not declared here
 import EducationComponent from "./EducationComponent";
 import CertificationComponent from "./CertificationComponent";
+import SkillsComponent from "./SkillsComponent";
 
 export default function FormSection() {
-  const { resumeInfo } = useContext(ResumeInfoContext);
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnabledNext] = useState(false);
 
@@ -56,6 +56,7 @@ export default function FormSection() {
         <EducationComponent onComplete={() => setEnabledNext(true)} />
       )}
       {activeFormIndex === 5 && <CertificationComponent />}
+      {activeFormIndex === 6 && <SkillsComponent />}
     </div>
   );
 }

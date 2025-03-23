@@ -4,6 +4,7 @@ import SummaryPreview from "./preview/SummaryPreview";
 import Experience from "./preview/ExperiencePreview";
 import EducationPreview from "./preview/EducationPreview";
 import CertificationPreview from "./preview/CertificationPreview";
+import SkillPreview from "./preview/SkillsPreview";
 
 export default function PreviewSectionPage() {
   return (
@@ -16,8 +17,9 @@ export default function PreviewSectionPage() {
             <PersonalDetailPreview />
             <SummaryPreview />
             <Experience />
-            <EducationPreview /> {/* Render the preview */}
+            <EducationPreview /> 
             <CertificationPreview />
+            <SkillPreview />
           </div>
         </div>
       </section>
