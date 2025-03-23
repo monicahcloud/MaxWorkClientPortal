@@ -1,7 +1,7 @@
 import React from "react";
 import PersonalDetailPreview from "./preview/PersonalDetailPreview";
-import Summary from "./preview/Summary";
-import Experience from "./preview/Experience";
+import SummaryPreview from "./preview/SummaryPreview";
+import Experience from "./preview/ExperiencePreview";
 
 export default function PreviewSectionPage() {
   return (
@@ -12,7 +12,7 @@ export default function PreviewSectionPage() {
           {/* PREVIEW SECTIONS */}
           <div className="space-y-6">
             <PersonalDetailPreview />
-            <Summary />
+            <SummaryPreview />
             <Experience />
           </div>
         </div>

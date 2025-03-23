@@ -25,7 +25,6 @@ export interface Experience {
   role: string;
   startDate: Date | undefined;
   endDate: Date | undefined;
-  description: string;
   duties: string;
   responsibilities: string;
   accomplishments: string;

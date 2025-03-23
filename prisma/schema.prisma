@@ -80,18 +80,23 @@ model PersonalInfo {
 }
 
 model Experience {
-  id               String   @id @default(uuid())
-  resumeId         String
+  id             String   @id @default(cuid())
+  company        String
   resume           Resume   @relation(fields: [resumeId], references: [id])
-  company          String?
-  role             String?
-  startDate        DateTime?
-  endDate          DateTime?
-  description      String?
-  duties           String?
+  role           String
+  startDate      DateTime?
+  endDate        DateTime?
+  duties         String?
   responsibilities String?
-  accomplishments  String?
+  accomplishments String?
+  clearance      String?
+  grade          String?
+  status         String?
+  time           String?
+  resumeId       String // optional
 }
+
+
 
 model Education {
   id         String   @id @default(uuid())

@@ -3,8 +3,8 @@
 import React from "react";
 import PersonalDetailsForm from "./forms/PersonalDetailsForm";
 import PersonalDetailPreview from "./preview/PersonalDetailPreview";
-import Skills from "./preview/Skills";
-import Experience from "./preview/Experience";
+import Skills from "./preview/SkillsPreview";
+import Experience from "./preview/ExperiencePreview";
 
 const PersonalDetailSection = () => {
   return (

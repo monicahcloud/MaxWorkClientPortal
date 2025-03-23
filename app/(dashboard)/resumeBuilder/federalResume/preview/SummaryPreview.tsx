@@ -6,7 +6,7 @@ import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 function SummaryPreview() {
   const { summary } = useResumeBuilder();
 
-  const placeholder = `A highly motivated and detail-oriented professional with a strong background in administrative operations and strategic planning. Passionate about driving efficiency and delivering measurable results across cross-functional teams.`;
+  const placeholder = `Provide a detailed summary of EVERY civilian job or military duty starting with the most recent. SPECIFY if you were military or civilian. If you have had multiple civilian jobs then feel free to break your experience into separate military and civilian sections but understand that virtually all Hiring Managers and Recruiters prefer to see a chronological timeline of your experience..`;
 
   return (
     <div className="mb-6">
