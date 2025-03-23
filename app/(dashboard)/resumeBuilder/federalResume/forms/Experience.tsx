@@ -22,10 +22,6 @@ import RichTextEditor from "@/app/components/global/RichTextEditor";
 import { toast } from "sonner";
 import { AIchatSession } from "@/utils/AIModal";
 
-// const dutiesPrompt = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of duties. Be honest but don’t be humble.`;
-// const responsibilitiesPrompt = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of responsibilities. Be honest but don’t be humble.`;
-// const accomplishmentsPrompt = `positionTitle:  ${experiences[index].role}: depends on positionTitle provide a SUBSTANTIVE explanations of your achievements:`;
-
 // ExperienceForm.tsx
 interface ExperienceFormProps {
   experience: ExperienceType;
@@ -34,6 +30,9 @@ interface ExperienceFormProps {
   onRemove: (index: number) => void;
   generateAI: (type: string) => void;
   loading: boolean;
+}
+interface Props {
+  onComplete: () => void;
 }
 
 function ExperienceForm({
@@ -269,7 +268,7 @@ const EditorField = ({
   );
 };
 
-function Experience() {
+function Experience({ onComplete }: Props) {
   const { experiences, setExperiences } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
 
@@ -332,6 +331,10 @@ function Experience() {
       }
 
       toast.success("Experience saved successfully!");
+      if (onComplete) {
+        // Call onComplete if it exists
+        onComplete();
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to save experience.");
     }

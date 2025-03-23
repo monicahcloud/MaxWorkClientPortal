@@ -34,6 +34,34 @@ export interface Experience {
   time: string;
 }
 
+export interface Education {
+  school: string;
+  degree: string;
+  field: string;
+  startYear: number;
+  endYear: number;
+}
+
+export interface Skill {
+  name: string;
+  level: string;
+}
+
+export interface Certification {
+  title: string;
+  issuer: string;
+  issueDate: Date;
+  expirationDate: Date | undefined;
+  credentialId: string | undefined;
+  credentialUrl: string | undefined;
+}
+
+export interface Achievement {
+  title: string;
+  description: string;
+  date: Date;
+}
+
 export interface ResumeBuilderContextType {
   personalInfo: PersonalInfo;
   setPersonalInfo: Dispatch<SetStateAction<PersonalInfo>>;
@@ -41,6 +69,14 @@ export interface ResumeBuilderContextType {
   setSummary: Dispatch<SetStateAction<string>>;
   experiences: Experience[];
   setExperiences: Dispatch<SetStateAction<Experience[]>>;
+  education: Education[];
+  setEducation: Dispatch<SetStateAction<Education[]>>;
+  skills: Skill[];
+  setSkills: Dispatch<SetStateAction<Skill[]>>;
+  certifications: Certification[];
+  setCertifications: Dispatch<SetStateAction<Certification[]>>;
+  achievements: Achievement[];
+  setAchievements: Dispatch<SetStateAction<Achievement[]>>;
 }
 
 // 2️⃣ Default state
@@ -62,6 +98,14 @@ const defaultContext: ResumeBuilderContextType = {
   setSummary: () => {},
   experiences: [],
   setExperiences: () => {},
+  education: [],
+  setEducation: () => {},
+  skills: [],
+  setSkills: () => {},
+  certifications: [],
+  setCertifications: () => {},
+  achievements: [],
+  setAchievements: () => {},
 };
 
 // 3️⃣ Create Context
@@ -78,6 +122,10 @@ export const ResumeBuilderProvider = ({
     useState<PersonalInfo>(defaultPersonalInfo);
   const [summary, setSummary] = useState<string>("");
   const [experiences, setExperiences] = useState<Experience[]>([]);
+  const [education, setEducation] = useState<Education[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [certifications, setCertifications] = useState<Certification[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
 
   return (
     <ResumeBuilderContext.Provider
@@ -88,6 +136,14 @@ export const ResumeBuilderProvider = ({
         setSummary,
         experiences,
         setExperiences,
+        education,
+        setEducation,
+        skills,
+        setSkills,
+        certifications,
+        setCertifications,
+        achievements,
+        setAchievements,
       }}>
       {children}
     </ResumeBuilderContext.Provider>
