@@ -40,9 +40,7 @@ function ExperiencePreview() {
               <p
                 className="mt-1"
                 dangerouslySetInnerHTML={{
-                  __html:
-                    exp.duties ||
-                    "Provide a <strong>DETAILED</strong> discussion of your responsibilities, duties, and accomplishments. Be honest but don’t be humble. Give <strong>SUBSTANTIVE</strong> explanations of your achievements: Led and supervised squad of 10 riflemen in all daily tasks and operations, effectively managed program X to Y &amp; Z results, mentored XX employees, sailors, etc., managed $XXX,XXX worth of equipment, budget, or resources.",
+                  __html: exp.duties,
                 }}
               />
             </div>
@@ -54,9 +52,7 @@ function ExperiencePreview() {
               <p
                 className="mt-1"
                 dangerouslySetInnerHTML={{
-                  __html:
-                    exp.responsibilities ||
-                    `No FLUFF OR BUZZ WORDS! No “results driven”, “detail oriented” or “outside the box” comments. They may sound impressive but recruiters and hiring managers see it on hundreds of resumes. Stick with quantifiable examples.`,
+                  __html: exp.responsibilities,
                 }}
               />
             </div>
@@ -68,9 +64,7 @@ function ExperiencePreview() {
               <p
                 className="mt-1"
                 dangerouslySetInnerHTML={{
-                  __html:
-                    exp.accomplishments ||
-                    `Again, be honest but do not be humble and sell yourself as being able to do a job by demonstrating HOW you have done it or related work previously!`,
+                  __html: exp.accomplishments,
                 }}
               />
             </div>

@@ -4,7 +4,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { getUserResumes } from "@/utils/actions";
-import Resumes from "../Resumes";
+import Resumes from "../../resumeBuilder/Resumes";
 
 // Import your client component
 

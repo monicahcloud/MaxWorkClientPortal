@@ -62,6 +62,13 @@ export interface Achievement {
   date: Date;
 }
 
+export interface Resume {
+  id: string;
+  title: string;
+  thumbnailUrl: string;
+  // Add other properties as needed
+}
+
 export interface ResumeBuilderContextType {
   personalInfo: PersonalInfo;
   setPersonalInfo: Dispatch<SetStateAction<PersonalInfo>>;

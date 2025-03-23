@@ -356,7 +356,7 @@ function Experience({ onComplete }: Props) {
     } else if (type === "responsibilities") {
       promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of responsibilities. Be honest but don’t be humble.`;
     } else if (type === "accomplishments") {
-      promptToUse = `positionTitle: ${experiences[index].role}: ${experiences[index].role} provide a SUBSTANTIVE explanations of your achievements:`;
+      promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a SUBSTANTIVE explanations of your achievements:`;
     }
 
     try {
@@ -366,32 +366,25 @@ function Experience({ onComplete }: Props) {
       const parsedData = JSON.parse(rawResponse);
       console.log("Parsed AI Response:", parsedData);
 
-      if (typeof parsedData === "object" && parsedData !== null) {
-        const roleSummary = parsedData[experiences[index].role];
-        console.log("Role Summary:", roleSummary);
-        console.log("Experience Role:", experiences[index].role);
-        if (roleSummary) {
-          if (type === "duties") {
+      if (Array.isArray(parsedData) && parsedData.length > 0) {
+        const responseObject = parsedData[0]; // Extract the object from the array
+
+        if (typeof responseObject === "object" && responseObject !== null) {
+          if (responseObject[type]) {
+            const contentString = responseObject[type].join("\n"); // Join array of strings into a single string
             handleExperienceChange(index, {
               ...experiences[index],
-              duties: roleSummary,
+              [type]: contentString,
             });
-          } else if (type === "responsibilities") {
-            handleExperienceChange(index, {
-              ...experiences[index],
-              responsibilities: roleSummary,
-            });
-          } else if (type === "accomplishments") {
-            handleExperienceChange(index, {
-              ...experiences[index],
-              accomplishments: roleSummary,
-            });
+          } else {
+            toast.error("AI did not return a summary for this role and type.");
           }
         } else {
-          toast.error("AI did not return a summary for this role.");
+          console.error("AI response is not an object:", responseObject);
+          toast.error("AI response format is incorrect.");
         }
       } else {
-        console.error("AI response is not an object:", parsedData);
+        console.error("AI response is not an array or is empty:", parsedData);
         toast.error("AI response format is incorrect.");
       }
     } catch (error) {

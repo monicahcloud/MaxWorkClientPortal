@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 
 import { getUserResumes } from "@/utils/actions";
-import Resumes from "./Resumes";
+import Resumes from "../resumeBuilder/Resumes";
 
 export default async function ResumesList() {
   const queryClient = new QueryClient();
