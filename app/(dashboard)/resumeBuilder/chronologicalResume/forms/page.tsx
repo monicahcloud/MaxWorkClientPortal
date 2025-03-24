@@ -3,15 +3,14 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
-
-import Summary from "./Summary";
-import Experience from "./Experience";
-import PersonalDetailsForm from "./PersonalDetailsForm"; // ✅ This is imported, not declared here
+import PersonDetailForm from "./PersonDetailForm";
+import SummaryForm from "./SummaryForm";
+import Experience from "./ExperienceForm";
 import EducationComponent from "./EducationComponent";
-import CertificationComponent from "./CertificationComponent";
 import SkillsComponent from "./SkillsComponent";
+import CertificationComponent from "./CertificationComponent";
 
-export default function FormSection() {
+export default function ChronologicalFormSection() {
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnabledNext] = useState(false);
 
@@ -42,10 +41,10 @@ export default function FormSection() {
 
       {/* FORM SECTIONS */}
       {activeFormIndex === 1 && (
-        <PersonalDetailsForm onComplete={() => setEnabledNext(true)} />
+        <PersonDetailForm onComplete={() => setEnabledNext(true)} />
       )}
       {activeFormIndex === 2 && (
-        <Summary onComplete={() => setEnabledNext(true)} />
+        <SummaryForm onComplete={() => setEnabledNext(true)} />
       )}
       {activeFormIndex === 3 && (
         <Experience onComplete={() => setEnabledNext(true)} />
@@ -53,8 +52,8 @@ export default function FormSection() {
       {activeFormIndex === 4 && (
         <EducationComponent onComplete={() => setEnabledNext(true)} />
       )}
-      {activeFormIndex === 5 && <CertificationComponent />}
       {activeFormIndex === 6 && <SkillsComponent />}
+      {activeFormIndex === 5 && <CertificationComponent />}
     </div>
   );
 }

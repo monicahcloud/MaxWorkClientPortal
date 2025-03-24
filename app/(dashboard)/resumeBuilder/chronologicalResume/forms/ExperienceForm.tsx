@@ -66,7 +66,7 @@ function ExperienceForm({
 
   return (
     <div className="border p-4 rounded-md mt-4 bg-white">
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold mb-2 uppercase">
           Experience #{index + 1}
         </h2>
@@ -75,9 +75,17 @@ function ExperienceForm({
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <div>
-          <Label>Organization, Location</Label>
+          <InputField
+            name="role"
+            label="Job Title"
+            value={experience.role}
+            onChange={handleInputChange}
+            className=""
+          />
+
+          <Label className="mt-3">Organization, Location</Label>
           <Input
             type="text"
             name="company"
@@ -149,64 +157,13 @@ function ExperienceForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-        <InputField
-          name="grade"
-          label="Grade"
-          value={experience.grade}
-          onChange={handleInputChange}
-        />
-        <InputField
-          name="status"
-          label="Job Series"
-          value={experience.status}
-          onChange={handleInputChange}
-        />
-        <InputField
-          name="time"
-          label="Schedule (hrs/wk)"
-          value={experience.time}
-          onChange={handleInputChange}
-        />
-        <InputField
-          name="clearance"
-          label="Clearance"
-          value={experience.clearance}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <InputField
-        name="role"
-        label="Job Title"
-        value={experience.role}
-        onChange={handleInputChange}
-        className="mt-2"
-      />
-
       <EditorField
-        label="Duties"
+        label="Description"
         value={experience.duties}
         onChange={(v: string) => handleRichTextEditor(v, "duties")}
         generateAI={generateAI}
         loading={loading}
         type="duties"
-      />
-      <EditorField
-        label="Responsibilities"
-        value={experience.responsibilities}
-        onChange={(v: string) => handleRichTextEditor(v, "responsibilities")}
-        generateAI={generateAI}
-        loading={loading}
-        type="responsibilities"
-      />
-      <EditorField
-        label="Key Accomplishments"
-        value={experience.accomplishments}
-        onChange={(v: string) => handleRichTextEditor(v, "accomplishments")}
-        generateAI={generateAI}
-        loading={loading}
-        type="accomplishments"
       />
     </div>
   );
@@ -354,7 +311,7 @@ function Experience({ onComplete }: Props) {
     let responseKey = ""; // Add this line
 
     if (type === "duties") {
-      promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of duties. Be honest but don’t be humble.`;
+      promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of duties and responsibilities. Be honest but don’t be humble.`;
       responseKey = "dutiesDiscussion"; // Add this line
     } else if (type === "responsibilities") {
       promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of responsibilities. Be honest but don’t be humble.`;

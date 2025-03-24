@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import ResumeSelection from "./ResumeSelection";
+import ResumeSelection from "./resumesComponents/ResumeSelection";
 
 export default function ResumeBuilderPage() {
   const queryClient = new QueryClient();

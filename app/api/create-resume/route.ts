@@ -1,3 +1,5 @@
+// app/api/create-resume/route.ts
+
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/utils/prisma";
@@ -10,18 +12,21 @@ export async function POST(req: NextRequest) {
   try {
     const resumeData = await req.json();
     const resumeTitle = resumeData.resumeTitle || "Untitled Resume";
+    const resumeType = resumeData.resumeType; // Extract resumeType
     console.log("Received resume data:", resumeData);
+
     // 1. Validate Data (Example - adjust to your needs)
     if (
       !resumeData.personalDetails ||
       !resumeData.personalDetails.firstName ||
       !resumeData.personalDetails.lastName ||
       !resumeData.experiences ||
-      !Array.isArray(resumeData.experiences)
+      !Array.isArray(resumeData.experiences) ||
+      !resumeType // Validate resumeType
     ) {
       console.log("Validation failed: Invalid resume data structure.");
       return NextResponse.json(
-        { error: "Invalid resume data structure." },
+        { error: "Invalid resume data structure or missing resumeType." },
         { status: 400 }
       );
     }
@@ -39,6 +44,7 @@ export async function POST(req: NextRequest) {
         title: resumeTitle,
         userId: userId,
         thumbnailData: thumbnailData, // Store thumbnail data
+        resumeType: resumeType, // Store resumeType
       },
     });
 

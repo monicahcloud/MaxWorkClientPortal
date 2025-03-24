@@ -1,5 +1,3 @@
-// /api/resume/education.js or /api/resume/education.ts
-
 import { prisma } from "@/utils/prisma";
 import { NextResponse } from "next/server";
 
@@ -21,6 +19,17 @@ export async function POST(request: Request) {
 
     for (const edu of education) {
       console.log("Processing education entry:", edu); // Add this
+      if (
+        typeof edu.startYear !== "number" ||
+        typeof edu.endYear !== "number" ||
+        typeof edu.resumeId !== "string"
+      ) {
+        console.log("Invalid data types in education entry:", edu);
+        return NextResponse.json(
+          { error: "Invalid data types in education data." },
+          { status: 400 }
+        );
+      }
       await prisma.education.create({
         data: {
           school: edu.school,

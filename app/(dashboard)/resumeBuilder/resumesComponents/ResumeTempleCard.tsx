@@ -1,3 +1,5 @@
+// app/resumeBuilder/ResumeTempleCard.tsx
+
 "use client";
 
 import Image from "next/image";
@@ -19,6 +21,7 @@ interface ResumeTemplate {
   image: string;
   href: string;
   description: string[];
+  resumeType: string; // Updated to resumeType
 }
 
 interface ResumeTemplateCardProps {
@@ -35,10 +38,13 @@ const ResumeTemplateCard: React.FC<ResumeTemplateCardProps> = ({
 
   const handleCreateResume = async () => {
     try {
-      const res = await fetch("/api/resume", {
+      const res = await fetch("/api/resumes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: resumeTitle }),
+        body: JSON.stringify({
+          title: resumeTitle,
+          resumeType: template.resumeType, // Updated to template.resumeType
+        }),
       });
 
       const data = await res.json();
