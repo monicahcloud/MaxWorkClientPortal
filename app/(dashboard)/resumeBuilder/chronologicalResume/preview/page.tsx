@@ -1,26 +1,47 @@
-import React from "react";
-import PersonDetailPreview from "./PersonDetailPreview";
-import SummaryPreview from "./SummaryPreview";
-import ExperiencePreview from "./ExperiencePreview";
-import EducationPreview from "./EducationPreview";
-import SkillPreview from "./SkillPreview";
+import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 import CertificationPreview from "./CertificationPreview";
+import EducationPreview from "./EducationPreview";
+import ExperiencePreview from "./ExperiencePreview";
+import PersonalDetailPreview from "./PersonDetailPreview";
+import SkillPreview from "./SkillPreview";
+import SummaryPreview from "./SummaryPreview";
 
-export default function ChronologicalPreviewSection() {
+interface ChronologicalPreviewSectionProps {
+  resumeData?: any;
+}
+
+export default function ChronologicalPreviewSection({
+  resumeData,
+}: ChronologicalPreviewSectionProps) {
+  const context = useResumeBuilder();
+
+  // Use resumeData if provided, else fall back to context
+  const personalInfo = resumeData?.personalInfo || context.personalInfo;
+  const summary = resumeData?.summary || context.summary;
+  const experiences = resumeData?.experiences || context.experiences;
+  const education = resumeData?.education || context.education;
+  const skills = resumeData?.skills || context.skills;
+  const certifications = resumeData?.certifications || context.certifications;
+
   return (
     <div className="shadow-lg h-full p-14 border-t-[20px]">
       {/* Personal Detail */}
-      <PersonDetailPreview />
+      <PersonalDetailPreview personalInfo={personalInfo} />
+
       {/* Summary */}
-      <SummaryPreview />
+      <SummaryPreview summary={summary} />
+
       {/* Professional Experience */}
-      <ExperiencePreview />
+      <ExperiencePreview experiences={experiences} />
+
       {/* Education */}
-      <EducationPreview />
+      <EducationPreview education={education} />
+
       {/* Certification */}
-      <CertificationPreview />
+      <CertificationPreview certifications={certifications} />
+
       {/* Skills */}
-      <SkillPreview />
+      <SkillPreview skills={skills} />
     </div>
   );
 }

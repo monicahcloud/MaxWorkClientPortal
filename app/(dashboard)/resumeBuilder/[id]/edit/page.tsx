@@ -12,6 +12,12 @@ import ChronologicalPreviewSection from "../../chronologicalResume/preview/page"
 import FunctionalFormPage from "../../functionalResume/forms/page";
 import FunctionalPreviewPage from "../../functionalResume/preview/page";
 // Import other form and preview components for different templates
+import CombinationFormPage from "../../functionalResume/preview/page";
+import CombinationPreviewPage from "../../functionalResume/preview/page";
+import FederalFormPage from "../../federalResume/forms/page";
+import FederalPreviewPage from "../../federalResume/PreviewSection";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 function EditResume() {
   const { getToken } = useAuth();
@@ -20,6 +26,7 @@ function EditResume() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [resumeType, setResumeType] = useState<string | null>(null); // Store resume type
+  const [resumeData, setResumeData] = useState<any>(null);
 
   const {
     personalInfo,
@@ -57,6 +64,9 @@ function EditResume() {
         }
 
         const resumeData = await response.json();
+        setResumeData(resumeData); // Store the full data object
+
+        console.log("Fetched Resume Data:", resumeData); // 🔍 Add this line
 
         // Update context state with fetched data
         setPersonalInfo(resumeData.personalInfo);
@@ -111,7 +121,7 @@ function EditResume() {
           certifications,
           achievements,
           image,
-          resumeType: resumeType, // Send resume type back to the api.
+          resumeType,
         }),
       });
 
@@ -119,11 +129,13 @@ function EditResume() {
         throw new Error("Failed to update resume data");
       }
 
-      setLoading(false);
-      router.push(`/resumeBuilder/${params.id}`); // Redirect to resume view page
+      toast.success("Resume saved successfully!");
+
+      router.push(`/resumeBuilder/${params.id}`);
     } catch (err) {
       console.error("Error updating resume data:", err);
-      setError(err.message || "An error occurred");
+      toast.error(err.message || "Something went wrong while saving.");
+    } finally {
       setLoading(false);
     }
   };
@@ -142,21 +154,27 @@ function EditResume() {
         return <ChronologicalFormSection />;
       case "functional":
         return <FunctionalFormPage />;
-      // Add cases for other templates
+      case "combination":
+        return <CombinationFormPage />;
+      case "federal":
+        return <FederalFormPage />;
       default:
         return <ChronologicalFormSection />; // Default to chronological if resumeType is not set
     }
   };
 
-  const renderPreview = () => {
+  const renderPreview = (data: any) => {
     switch (resumeType) {
       case "chronological":
-        return <ChronologicalPreviewSection />;
+        return <ChronologicalPreviewSection resumeData={data} />;
       case "functional":
-        return <FunctionalPreviewPage />;
-      // Add cases for other templates
+        return <FunctionalPreviewPage resumeData={data} />;
+      case "combination":
+        return <CombinationPreviewPage resumeData={data} />;
+      case "federal":
+        return <FederalPreviewPage resumeData={data} />;
       default:
-        return <ChronologicalPreviewSection />; // Default to chronological if resumeType is not set
+        return <ChronologicalPreviewSection resumeData={data} />;
     }
   };
 
@@ -168,14 +186,40 @@ function EditResume() {
             Edit Your Resume
           </h1>
           {renderForm()}
-          <button
+          <Button
             onClick={handleSave}
-            className="bg-blue-500 text-white p-2 rounded">
-            Save Changes
-          </button>
+            disabled={loading}
+            className={`bg-slate-900 text-white px-4 py-2 rounded flex items-center justify-center gap-2 ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}>
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Saving...
+              </>
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
         </div>
         <div className="col-span-12 lg:col-span-6 2xl:col-span-6">
-          {renderPreview()}
+          {renderPreview(resumeData)}
         </div>
       </div>
     </ResumeBuilderProvider>

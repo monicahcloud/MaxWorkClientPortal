@@ -1,6 +1,8 @@
+// components/chronologicalResume/forms/page.tsx
+
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
 import PersonDetailForm from "./PersonDetailForm";
@@ -9,10 +11,49 @@ import Experience from "./ExperienceForm";
 import EducationComponent from "./EducationComponent";
 import SkillsComponent from "./SkillsComponent";
 import CertificationComponent from "./CertificationComponent";
+import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
+import ResumeCompletion from "../../resumesComponents/ResumeCompletion";
 
 export default function ChronologicalFormSection() {
+  const {
+    personalInfo,
+    setPersonalInfo,
+    summary,
+    setSummary,
+    experiences,
+    setExperiences,
+    education,
+    setEducation,
+    skills,
+    setSkills,
+    certifications,
+    setCertifications,
+  } = useResumeBuilder();
+
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnabledNext] = useState(false);
+
+  useEffect(() => {
+    // Enable next if the current form has data
+    if (activeFormIndex === 1 && personalInfo) setEnabledNext(true);
+    if (activeFormIndex === 2 && summary) setEnabledNext(true);
+    if (activeFormIndex === 3 && experiences && experiences.length > 0)
+      setEnabledNext(true);
+    if (activeFormIndex === 4 && education && education.length > 0)
+      setEnabledNext(true);
+    if (activeFormIndex === 5 && certifications && certifications.length > 0)
+      setEnabledNext(true);
+    if (activeFormIndex === 6 && skills && skills.length > 0)
+      setEnabledNext(true);
+  }, [
+    activeFormIndex,
+    personalInfo,
+    summary,
+    experiences,
+    education,
+    certifications,
+    skills,
+  ]);
 
   const goToNext = () => setActiveFormIndex((prev) => prev + 1);
   const goToPrev = () => setActiveFormIndex((prev) => prev - 1);
@@ -29,13 +70,15 @@ export default function ChronologicalFormSection() {
               <ArrowLeft /> Previous
             </Button>
           )}
-          <Button
-            disabled={!enableNext}
-            size="sm"
-            onClick={goToNext}
-            className="flex gap-2">
-            Next <ArrowRight />
-          </Button>
+          {activeFormIndex < 7 && (
+            <Button
+              disabled={!enableNext}
+              size="sm"
+              onClick={goToNext}
+              className="flex gap-2">
+              Next <ArrowRight />
+            </Button>
+          )}
         </div>
       </div>
 
@@ -52,8 +95,12 @@ export default function ChronologicalFormSection() {
       {activeFormIndex === 4 && (
         <EducationComponent onComplete={() => setEnabledNext(true)} />
       )}
-      {activeFormIndex === 6 && <SkillsComponent />}
       {activeFormIndex === 5 && <CertificationComponent />}
+      {activeFormIndex === 6 && <SkillsComponent />}
+
+      {activeFormIndex === 7 && (
+        <ResumeCompletion onComplete={() => setEnabledNext(false)} />
+      )}
     </div>
   );
 }

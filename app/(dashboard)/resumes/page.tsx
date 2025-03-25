@@ -36,7 +36,7 @@ export default function ResumesPage() {
               <h2 className="text-center text-xl my-2">{resume.title}</h2>
               <Image
                 priority
-                src="/MaxWorklogo.png"
+                src="/cv.png"
                 alt="thumbnail"
                 width={100}
                 height={100}

@@ -11,20 +11,14 @@ export async function POST(req: NextRequest) {
   }
   try {
     const resumeData = await req.json();
-    const resumeTitle = resumeData.resumeTitle || "Untitled Resume";
+    const resumeTitle = resumeData.title || "Untitled Resume";
     const resumeType = resumeData.resumeType; // Extract resumeType
     console.log("Received resume data:", resumeData);
 
     // 1. Validate Data (Example - adjust to your needs)
-    if (
-      !resumeData.personalDetails ||
-      !resumeData.personalDetails.firstName ||
-      !resumeData.personalDetails.lastName ||
-      !resumeData.experiences ||
-      !Array.isArray(resumeData.experiences) ||
-      !resumeType // Validate resumeType
-    ) {
-      console.log("Validation failed: Invalid resume data structure.");
+    if (!resumeType) {
+      // Removed personalDetails and experiences validation
+      console.log("Validation failed: Missing resumeType.");
       return NextResponse.json(
         { error: "Invalid resume data structure or missing resumeType." },
         { status: 400 }
@@ -33,9 +27,9 @@ export async function POST(req: NextRequest) {
 
     // Generate thumbnail data (example - adjust to your needs)
     const thumbnailData = {
-      name: `${resumeData.personalDetails.firstName} ${resumeData.personalDetails.lastName}`,
-      jobTitle: resumeData.personalDetails.jobTitle,
-      experience: resumeData.experiences.map((exp: any) => exp.role),
+      name: "Default Name", // Set default values as they are not being sent
+      jobTitle: "Default Title",
+      experience: [],
     };
 
     // Store resume metadata and thumbnail data in the database using Prisma

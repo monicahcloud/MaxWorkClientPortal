@@ -1,9 +1,23 @@
+"use client";
+
 import React from "react";
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
+import {
+  useResumeBuilder,
+  Experience as ExperienceType,
+} from "@/app/context/ResumeBuilderContext";
 import { format } from "date-fns";
 
-function ExperiencePreview() {
-  const { experiences } = useResumeBuilder();
+interface ExperiencePreviewProps {
+  experiences?: ExperienceType[];
+}
+
+const ExperiencePreview: React.FC<ExperiencePreviewProps> = ({
+  experiences: propExperiences,
+}) => {
+  const context = useResumeBuilder();
+  const experiences = propExperiences || context.experiences;
+
+  if (!experiences || experiences.length === 0) return null;
 
   return (
     <div className="mb-6">
@@ -17,10 +31,12 @@ function ExperiencePreview() {
           <h2 className="text-sm flex font-bold justify-between">
             {exp.role || "Job Title"}{" "}
             <span>
-              {exp.startDate ? format(exp.startDate, "MMM yyyy") : "Start Date"}{" "}
+              {exp.startDate
+                ? format(new Date(exp.startDate), "MMM yyyy")
+                : "Start Date"}{" "}
               -{" "}
               {exp.endDate
-                ? format(exp.endDate, "MMM yyyy")
+                ? format(new Date(exp.endDate), "MMM yyyy")
                 : "Present or End Date"}
             </span>
           </h2>
@@ -30,44 +46,20 @@ function ExperiencePreview() {
           </h2>
 
           <div className="mt-3 space-y-2 text-xs">
-            <div>
-              <span className="block font-bold uppercase"></span>
-              <p
-                className="mt-1"
-                dangerouslySetInnerHTML={{
-                  __html: exp.duties,
-                }}
-              />
-            </div>
-
-            {/* <div>
-              <span className="block font-bold uppercase">
-                Responsibilities:
-              </span>
-              <p
-                className="mt-1"
-                dangerouslySetInnerHTML={{
-                  __html: exp.responsibilities,
-                }}
-              />
-            </div>
-
-            <div>
-              <span className="block font-bold uppercase">
-                Key Accomplishments:
-              </span>
-              <p
-                className="mt-1"
-                dangerouslySetInnerHTML={{
-                  __html: exp.accomplishments,
-                }}
-              /> 
-            </div>*/}
+            {exp.duties && (
+              <div>
+                <ul className="list-disc list-inside mt-1">
+                  {exp.duties.split("\n").map((duty, dutyIndex) => (
+                    <li key={dutyIndex}>{duty.replace(/^\s*-\s*/, "")}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default ExperiencePreview;

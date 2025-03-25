@@ -38,22 +38,26 @@ const ResumeTemplateCard: React.FC<ResumeTemplateCardProps> = ({
 
   const handleCreateResume = async () => {
     try {
-      const res = await fetch("/api/resumes", {
+      const requestBody = {
+        title: resumeTitle,
+        resumeType: template.resumeType,
+      };
+
+      console.log("Request Body:", requestBody);
+
+      const res = await fetch("/api/create-resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: resumeTitle,
-          resumeType: template.resumeType, // Updated to template.resumeType
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       const data = await res.json();
 
-      if (res.ok && data?.id) {
+      if (res.ok && data?.message) {
         // Redirect with resumeId
         router.push(
           `${template.href}?resumeId=${
-            data.id
+            data.resumeId
           }&resumeTitle=${encodeURIComponent(resumeTitle)}`
         );
       } else {

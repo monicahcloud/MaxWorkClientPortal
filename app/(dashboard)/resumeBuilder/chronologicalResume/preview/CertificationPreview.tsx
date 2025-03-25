@@ -1,16 +1,28 @@
-import React from "react";
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
+"use client";
 
-function CertificationPreview() {
-  const { certifications } = useResumeBuilder();
-  // Check if there are any certifications with actual data
+import React from "react";
+import {
+  useResumeBuilder,
+  Certification as CertificationType,
+} from "@/app/context/ResumeBuilderContext";
+
+interface CertificationPreviewProps {
+  certifications?: CertificationType[];
+}
+
+const CertificationPreview: React.FC<CertificationPreviewProps> = ({
+  certifications: propCertifications,
+}) => {
+  const context = useResumeBuilder();
+  const certifications = propCertifications || context.certifications;
+
+  if (!certifications || certifications.length === 0) return null;
+
   const hasCertifications = certifications.some(
     (cert) => cert.title || cert.issuer || cert.issueDate || cert.expirationDate
   );
 
-  if (!hasCertifications) {
-    return null; // Don't render anything if no certifications with data
-  }
+  if (!hasCertifications) return null;
 
   return (
     <div className="mb-6">
@@ -21,22 +33,22 @@ function CertificationPreview() {
       {certifications.map((cert, index) => (
         <div key={index} className="my-5">
           <h2 className="text-sm font-bold flex justify-between">
-            {cert.title}
+            {cert.title || "Certification Title"}
             <span>
               {cert.issueDate
-                ? cert.issueDate.toISOString().split("T")[0]
+                ? new Date(cert.issueDate).toISOString().split("T")[0]
                 : "N/A"}{" "}
               -{" "}
               {cert.expirationDate
-                ? cert.expirationDate.toISOString().split("T")[0]
+                ? new Date(cert.expirationDate).toISOString().split("T")[0]
                 : "N/A"}
             </span>
           </h2>
-          <h2 className="text-xs ">{cert.issuer}</h2>
+          <h2 className="text-xs">{cert.issuer || "Issuer"}</h2>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default CertificationPreview;

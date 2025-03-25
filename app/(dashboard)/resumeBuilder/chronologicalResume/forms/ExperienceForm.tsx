@@ -18,9 +18,10 @@ import {
   Experience as ExperienceType,
 } from "@/app/context/ResumeBuilderContext";
 import { Checkbox } from "@/components/ui/checkbox";
-import RichTextEditor from "@/app/components/global/RichTextEditor";
 import { toast } from "sonner";
 import { AIchatSession } from "@/utils/AIModal";
+import { Textarea } from "@/components/ui/textarea";
+import { Brain, LoaderCircle } from "lucide-react";
 
 // ExperienceForm.tsx
 interface ExperienceFormProps {
@@ -28,7 +29,7 @@ interface ExperienceFormProps {
   index: number;
   onChange: (index: number, updated: ExperienceType) => void;
   onRemove: (index: number) => void;
-  generateAI: (type: string) => void;
+  generateAI: (index: number) => void;
   loading: boolean;
 }
 interface Props {
@@ -60,8 +61,8 @@ function ExperienceForm({
     onChange(index, { ...experience, endDate: date });
   };
 
-  const handleRichTextEditor = (value: string, field: keyof ExperienceType) => {
-    onChange(index, { ...experience, [field]: value });
+  const handleDutiesChange = (value: string) => {
+    onChange(index, { ...experience, duties: value });
   };
 
   return (
@@ -156,14 +157,27 @@ function ExperienceForm({
           </div>
         </div>
       </div>
-
-      <EditorField
-        label="Description"
+      <div className="flex justify-end items-end mb-5">
+        <Button
+          variant="outline"
+          type="button"
+          size="sm"
+          disabled={loading}
+          onClick={() => generateAI(index)}
+          className="border-primary text-primary flex gap-2">
+          {loading ? (
+            <LoaderCircle className="animate-spin w-4 h-4" />
+          ) : (
+            <Brain className="h-4 w-4" />
+          )}
+          {loading ? "Generating..." : "Generate from AI"}
+        </Button>
+      </div>
+      <Textarea
+        placeholder="Briefly describe your duties..."
+        rows={6}
         value={experience.duties}
-        onChange={(v: string) => handleRichTextEditor(v, "duties")}
-        generateAI={generateAI}
-        loading={loading}
-        type="duties"
+        onChange={(e) => handleDutiesChange(e.target.value)}
       />
     </div>
   );
@@ -194,46 +208,11 @@ const InputField = ({
     </div>
   );
 };
-
-interface EditorFieldProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  generateAI: (type: string) => void;
-  loading: boolean;
-  type: string;
-}
-
-const EditorField = ({
-  label,
-  value,
-  onChange,
-  generateAI,
-  loading,
-  type,
-}: EditorFieldProps) => {
-  console.log(`EditorField ${type} value:`, value); // Add this line
-  return (
-    <div className="mt-2">
-      <Label>{label}</Label>
-      <RichTextEditor
-        onRichTextEditorChange={onChange}
-        generateAI={generateAI}
-        loading={loading}
-        type={type}
-        value={value} // Pass the value prop to RichTextEditor
-      />
-    </div>
-  );
-};
-
 function Experience({ onComplete }: Props) {
   const { experiences, setExperiences } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
 
   const handleExperienceChange = (index: number, updated: ExperienceType) => {
-    console.log("handleExperienceChange index", index);
-    console.log("handleExperienceChange updated", updated);
     setExperiences((prevExperiences) => {
       const updatedExperiences = prevExperiences.map((exp, i) => {
         if (i === index) {
@@ -241,7 +220,6 @@ function Experience({ onComplete }: Props) {
         }
         return exp;
       });
-      console.log("updatedExperiences", updatedExperiences);
       return updatedExperiences;
     });
   };
@@ -291,7 +269,7 @@ function Experience({ onComplete }: Props) {
 
       toast.success("Experience saved successfully!");
       if (onComplete) {
-        // Call onComplete if it exists
+        // Call onComplete
         onComplete();
       }
     } catch (error: any) {
@@ -299,7 +277,7 @@ function Experience({ onComplete }: Props) {
     }
   };
 
-  const GenerateSummaryFromAI = async (type: string, index: number) => {
+  const GenerateSummaryFromAI = async (index: number) => {
     setLoading(true);
     if (!experiences[index].role) {
       toast.error("Please enter a role first");
@@ -307,48 +285,52 @@ function Experience({ onComplete }: Props) {
       return;
     }
 
-    let promptToUse = "";
-    let responseKey = ""; // Add this line
-
-    if (type === "duties") {
-      promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of duties and responsibilities. Be honest but don’t be humble.`;
-      responseKey = "dutiesDiscussion"; // Add this line
-    } else if (type === "responsibilities") {
-      promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of responsibilities. Be honest but don’t be humble.`;
-      responseKey = "responsibilitiesDiscussion"; // Add this line
-    } else if (type === "accomplishments") {
-      promptToUse = `positionTitle: ${experiences[index].role}: depends on positionTitle provide a SUBSTANTIVE explanations of your achievements:`;
-      responseKey = "accomplishmentsDiscussion"; // Add this line
-    }
+    let promptToUse = `positionTitle: ${experiences[index].role}: Based on the position title, provide a list of duties and responsibilities specifically for a resume experience section. Each duty should be concise, action-oriented, and formatted as a bullet point. Return the response in JSON format with a single key "dutiesBullets", which contains an array of strings representing the bullet points. Example: {"dutiesBullets": ["Managed project timelines and deliverables.", "Developed and maintained client relationships.", "Analyzed data to identify trends and insights." ]}`;
 
     try {
       const result = await AIchatSession.sendMessage(promptToUse);
       const rawResponse = result.response.text();
       console.log("Raw AI Response:", rawResponse);
-      const parsedData = JSON.parse(rawResponse);
-      console.log("Parsed AI Response:", parsedData);
 
-      if (Array.isArray(parsedData) && parsedData.length > 0) {
-        const responseObject = parsedData[0];
+      let parsedData;
+      try {
+        parsedData = JSON.parse(rawResponse);
+      } catch (jsonError) {
+        console.error("JSON parsing error:", jsonError);
+        toast.error("AI returned an invalid JSON format.");
+        setLoading(false);
+        return;
+      }
 
-        if (typeof responseObject === "object" && responseObject !== null) {
-          if (responseObject[responseKey]) {
-            // Use responseKey here
-            const contentString = responseObject[responseKey];
-            handleExperienceChange(index, {
-              ...experiences[index],
-              [type]: contentString,
-            });
-          } else {
-            toast.error("AI did not return a summary for this role and type.");
-          }
-        } else {
-          console.error("AI response is not an object:", responseObject);
-          toast.error("AI response format is incorrect.");
-        }
+      if (parsedData && Array.isArray(parsedData.dutiesBullets)) {
+        // Correct format received
+        const dutiesString = parsedData.dutiesBullets.join("\n- ");
+        handleExperienceChange(index, {
+          ...experiences[index],
+          duties: "- " + dutiesString,
+        });
       } else {
-        console.error("AI response is not an array or is empty:", parsedData);
-        toast.error("AI response format is incorrect.");
+        // Handle incorrect format
+        console.error(
+          "AI response missing or invalid dutiesBullets:",
+          parsedData
+        );
+        toast.error(
+          "AI did not return duties in the expected bullet point format. Attempting to extract bullet points."
+        );
+
+        // Attempt to extract bullet points from raw response
+        const extractedBullets = extractBulletsFromText(rawResponse);
+
+        if (extractedBullets.length > 0) {
+          const dutiesString = extractedBullets.join("\n- ");
+          handleExperienceChange(index, {
+            ...experiences[index],
+            duties: "- " + dutiesString,
+          });
+        } else {
+          toast.error("Failed to extract duties from AI response.");
+        }
       }
     } catch (error) {
       console.error("Error generating summary:", error);
@@ -357,12 +339,25 @@ function Experience({ onComplete }: Props) {
       setLoading(false);
     }
   };
+
+  // Helper function to extract bullet points from text
+  function extractBulletsFromText(text: string): string[] {
+    const bulletRegex = /[-*]\s+(.+?)(?=\n|$)/g; // Regex to match bullet points
+    const bullets: string[] = [];
+    let match;
+
+    while ((match = bulletRegex.exec(text)) !== null) {
+      bullets.push(match[1].trim());
+    }
+
+    return bullets;
+  }
+
   return (
     <div className="p-4 border-t-4 border-blue-600 bg-gray-50 rounded-md shadow">
       <h1 className="text-2xl font-bold">Experience</h1>
 
       {experiences.map((exp, index) => {
-        console.log("Experience Data before render", exp);
         return (
           <ExperienceForm
             key={index}
@@ -370,7 +365,7 @@ function Experience({ onComplete }: Props) {
             index={index}
             onChange={handleExperienceChange}
             onRemove={RemoveExperience}
-            generateAI={(type: string) => GenerateSummaryFromAI(type, index)}
+            generateAI={GenerateSummaryFromAI}
             loading={loading}
           />
         );

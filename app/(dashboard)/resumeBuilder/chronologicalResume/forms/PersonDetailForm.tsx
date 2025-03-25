@@ -43,24 +43,23 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
         body: JSON.stringify({ resumeId, ...personalInfo }),
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        toast.success("Personal info saved successfully!"); // ✅ Success toast
-        onComplete();
-      } else {
-        toast.error(data.error || "Something went wrong saving your info."); // ❌ Error toast
+      if (!res.ok) {
+        const data = await res.json();
+        console.log(data); // Log data here, after it's declared.
+        toast.error(data.error || "Something went wrong saving your info.");
+        setLoading(false);
+        return;
       }
+
+      toast.success("Personal info saved successfully!");
+      onComplete();
     } catch (err) {
-      toast.error("Unable to save personal info. Please try again."); // ❌ General error
+      toast.error("Unable to save personal info. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-  // Function to extract personal details
-  const getPersonalDetails = () => {
-    return personalInfo;
-  };
+
   return (
     <div className="p-5 shadow-lg rounded-lg w-full border-blue-700 border-t-4 mt-10">
       <h2 className="font-bold text-lg">Personal Detail</h2>
@@ -70,6 +69,7 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
         <div className="grid grid-cols-2 mt-5 gap-3">
           <div>
             <Label className="text-sm">First Name</Label>
+
             <Input
               name="firstName"
               value={personalInfo.firstName}
@@ -77,8 +77,10 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
               required
             />
           </div>
+
           <div>
             <Label className="text-sm">Last Name</Label>
+
             <Input
               name="lastName"
               value={personalInfo.lastName}
@@ -86,8 +88,10 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
               required
             />
           </div>
+
           <div className="col-span-2">
             <Label className="text-sm">Job Title</Label>
+
             <Input
               name="jobTitle"
               value={personalInfo.jobTitle}
@@ -95,8 +99,10 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
               required
             />
           </div>
+
           <div className="col-span-2">
             <Label className="text-sm">Address</Label>
+
             <Input
               name="address"
               value={personalInfo.address}
@@ -104,17 +110,28 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
               required
             />
           </div>
+
           {/* <div>
-            <Label className="text-sm">Department</Label>
-            <Input
-              name="department"
-              value={personalInfo.department}
-              onChange={handleInputChange}
-              required
-            /> s
-          </div> */}
+
+<Label className="text-sm">Department</Label>
+
+<Input
+
+name="department"
+
+value={personalInfo.department}
+
+onChange={handleInputChange}
+
+required
+
+/> s
+
+</div> */}
+
           <div>
             <Label className="text-sm">Email Address</Label>
+
             <Input
               name="email"
               value={personalInfo.email}
@@ -122,8 +139,10 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
               required
             />
           </div>
+
           <div>
             <Label className="text-sm">Phone Number</Label>
+
             <Input
               name="phone"
               value={personalInfo.phone}
@@ -131,8 +150,10 @@ const PersonDetailForm: React.FC<Props> = ({ onComplete }) => {
               required
             />
           </div>
+
           <div>
             <Label className="text-sm">Website</Label>
+
             <Input
               name="website"
               value={personalInfo.website}

@@ -3,8 +3,15 @@
 import React from "react";
 import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 
-function PersonalDetailPreview() {
-  const { personalInfo } = useResumeBuilder();
+interface PersonalDetailPreviewProps {
+  personalInfo?: any;
+}
+
+const PersonalDetailPreview: React.FC<PersonalDetailPreviewProps> = ({
+  personalInfo: propPersonalInfo,
+}) => {
+  const context = useResumeBuilder();
+  const personalInfo = propPersonalInfo || context.personalInfo || {};
 
   const fullName = `${personalInfo.firstName || "Monicah"} ${
     personalInfo.lastName || "Cloud"
@@ -41,6 +48,6 @@ function PersonalDetailPreview() {
       <hr className="border-t-2 border-blue-900 mt-6 w-full" />
     </div>
   );
-}
+};
 
 export default PersonalDetailPreview;

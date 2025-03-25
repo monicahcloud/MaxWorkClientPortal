@@ -1,8 +1,22 @@
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
-import React from "react";
+"use client";
 
-function EducationPreview() {
-  const { education } = useResumeBuilder();
+import React from "react";
+import {
+  useResumeBuilder,
+  Education as EducationType,
+} from "@/app/context/ResumeBuilderContext";
+
+interface EducationPreviewProps {
+  education?: EducationType[];
+}
+
+const EducationPreview: React.FC<EducationPreviewProps> = ({
+  education: propEducation,
+}) => {
+  const context = useResumeBuilder();
+  const education = propEducation || context.education;
+
+  if (!education || education.length === 0) return null;
 
   return (
     <div className="mb-6">
@@ -18,11 +32,11 @@ function EducationPreview() {
               {edu.startYear} - {edu.endYear}
             </span>
           </h2>
-          <h2 className="text-xs ">{edu.school}</h2>
+          <h2 className="text-xs">{edu.school}</h2>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default EducationPreview;
