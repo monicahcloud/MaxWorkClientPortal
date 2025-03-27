@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, LayoutGrid } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, LayoutGrid } from "lucide-react";
 import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 import PersonDetailForm from "@/app/(dashboard)/resumeBuilder/chronologicalResume/forms/PersonDetailForm";
 import SummaryForm from "@/app/(dashboard)/resumeBuilder/chronologicalResume/forms/SummaryForm";
@@ -9,9 +9,9 @@ import Experience from "@/app/(dashboard)/resumeBuilder/chronologicalResume/form
 import EducationComponent from "@/app/(dashboard)/resumeBuilder/chronologicalResume/forms/EducationComponent";
 import CertificationComponent from "@/app/(dashboard)/resumeBuilder/chronologicalResume/forms/CertificationComponent";
 import SkillsComponent from "@/app/(dashboard)/resumeBuilder/chronologicalResume/forms/SkillsComponent";
-import ResumeCompletion from "@/app/(dashboard)/resumeBuilder/resumesComponents/ResumeCompletion";
-import ViewResumePage from "@/app/(dashboard)/my-resume/[resume-id]/view/page";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 interface ChronologicalFormSectionProps {
   resumeId: string;
   resumeTitle: string;
@@ -68,9 +68,16 @@ export default function ChronologicalFormSection({
   return (
     <div className="w-full mx-auto items-center">
       <div className="flex justify-between w-full items-center mb-4">
-        <Button variant="outline" size="sm" className="flex gap-2">
-          <LayoutGrid /> Theme
-        </Button>
+        <div className="flex gap-5">
+          <Link href={"/home"}>
+            <Button>
+              <Home />
+            </Button>
+          </Link>
+          <Button variant="outline" size="sm" className="flex gap-2">
+            <LayoutGrid /> Theme
+          </Button>
+        </div>
         <div className="flex gap-2">
           {activeFormIndex > 1 && (
             <Button size="sm" onClick={goToPrev} className="flex gap-2">

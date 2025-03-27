@@ -8,7 +8,6 @@ import {
   useResumeBuilder,
 } from "@/app/context/ResumeBuilderContext";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import ChronologicalFormSection from "@/app/components/chronologicalResume/forms/ChronologicalFormSection";
 import ChronologicalPreviewSection from "@/app/components/chronologicalResume/preview/ChronologicalPreviewSection";
 
@@ -186,7 +185,7 @@ function EditResume() {
 
         {renderForm()}
 
-        <Button
+        {/* <Button
           onClick={handleSave}
           disabled={loading}
           className={`bg-slate-900 text-white px-4 py-2 rounded flex items-center justify-center gap-2 ${
@@ -218,7 +217,7 @@ function EditResume() {
           ) : (
             "Save Changes"
           )}
-        </Button>
+        </Button> */}
       </div>
 
       <div className="col-span-12 lg:col-span-6 2xl:col-span-6">

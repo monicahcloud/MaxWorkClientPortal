@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Banknote, Briefcase, RadioTower } from "lucide-react";
+import { Briefcase, RadioTower } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import DeleteJob from "./DeleteJob";
@@ -27,7 +27,6 @@ export default function JobCard({ job }: { job: JobType }) {
         </CardHeader>
         <CardContent className=" gap-4">
           <JobInfo icon={<Briefcase />} text={job.mode} />
-          <JobInfo icon={<Banknote />} text="$120,000 - $150,00 / Yearly" />
           <CardDescription>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis
             laboriosam porro, dicta sed inventore tenetur numquam ipsam in et

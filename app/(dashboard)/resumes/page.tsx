@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Loader2Icon, MoreVertical } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation"; // Import useRouter
+import { useRouter } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -30,14 +30,14 @@ type Resume = {
   title: string;
   resumeType?: string;
   createdAt?: string;
-  // add other properties as needed
 };
 
 export default function ResumesPage() {
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [openAlert, setOpenAlert] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter(); // Initialize router
+  const router = useRouter();
+  const [resumeToDeleteId, setResumeToDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchResumes() {
@@ -47,7 +47,6 @@ export default function ResumesPage() {
           throw new Error("Failed to fetch resumes.");
         }
         const data = await response.json();
-        console.log("Resumes data:", data);
         setResumes(data);
       } catch (error) {
         console.error("Error fetching resumes:", error);
@@ -56,13 +55,30 @@ export default function ResumesPage() {
     fetchResumes();
   }, []);
 
-  const onDelete = () => {
+  const onDelete = async () => {
     setLoading(true);
-    // Implement delete logic here
-    // After deletion, you can update the resumes state or redirect
-    toast.success("Resume deleted");
-    setLoading(false);
-    setOpenAlert(false);
+    try {
+      if (resumeToDeleteId) {
+        console.log("Deleting resume with ID:", resumeToDeleteId); // Add this line
+        const response = await fetch(`/api/resumes/${resumeToDeleteId}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to delete resume.");
+        }
+        setResumes((prevResumes) =>
+          prevResumes.filter((resume) => resume.id !== resumeToDeleteId)
+        );
+        toast.success("Resume deleted");
+      }
+    } catch (error) {
+      console.error("Error deleting resume:", error);
+      toast.error("Failed to delete resume.");
+    } finally {
+      setLoading(false);
+      setOpenAlert(false);
+      setResumeToDeleteId(null);
+    }
   };
 
   const handleEdit = (id: string) => {
@@ -74,9 +90,14 @@ export default function ResumesPage() {
   };
 
   const handleDownload = (id: string) => {
-    // Implement download logic here
     toast.success("Download started");
     console.log(`Download resume with id: ${id}`);
+  };
+
+  const handleDeleteClick = (id: string) => {
+    console.log("handleDeleteClick called with ID:", id); // Add this line
+    setResumeToDeleteId(id);
+    setOpenAlert(true);
   };
 
   return (
@@ -118,7 +139,8 @@ export default function ResumesPage() {
                     <DropdownMenuItem onClick={() => handleDownload(resume.id)}>
                       Download
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setOpenAlert(true)}>
+                    <DropdownMenuItem
+                      onClick={() => handleDeleteClick(resume.id)}>
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>

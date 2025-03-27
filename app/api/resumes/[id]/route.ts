@@ -87,3 +87,38 @@ export async function PUT(
     );
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const id = params.id;
+
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      console.log("DELETE API: Unauthorized user");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    console.log(`DELETE API: Attempting to delete resume with ID: ${id}`);
+
+    await prisma.resume.delete({
+      where: {
+        id: id,
+        userId: userId,
+      },
+    });
+
+    console.log(`DELETE API: Resume with ID: ${id} deleted successfully`);
+
+    return NextResponse.json({ message: "Resume deleted successfully" });
+  } catch (error) {
+    console.error("DELETE API: Error deleting resume:", error);
+    return NextResponse.json(
+      { error: "Failed to delete resume" },
+      { status: 500 }
+    );
+  }
+}
