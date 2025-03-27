@@ -14,7 +14,13 @@ import CertificationComponent from "./CertificationComponent";
 import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 import ResumeCompletion from "../../resumesComponents/ResumeCompletion";
 
-export default function ChronologicalFormSection() {
+interface ChronologicalFormSectionProps {
+  resumeId: string;
+}
+
+export default function ChronologicalFormSection({
+  resumeId,
+}: ChronologicalFormSectionProps) {
   const {
     personalInfo,
     setPersonalInfo,
@@ -84,19 +90,42 @@ export default function ChronologicalFormSection() {
 
       {/* FORM SECTIONS */}
       {activeFormIndex === 1 && (
-        <PersonDetailForm onComplete={() => setEnabledNext(true)} />
+        <PersonDetailForm
+          onComplete={() => setEnabledNext(true)}
+          resumeId={resumeId}
+        />
       )}
+
       {activeFormIndex === 2 && (
-        <SummaryForm onComplete={() => setEnabledNext(true)} />
+        <SummaryForm
+          onComplete={() => setEnabledNext(true)}
+          resumeId={resumeId}
+        />
       )}
       {activeFormIndex === 3 && (
-        <Experience onComplete={() => setEnabledNext(true)} />
+        <Experience
+          onComplete={() => setEnabledNext(true)}
+          resumeId={resumeId}
+        />
       )}
       {activeFormIndex === 4 && (
-        <EducationComponent onComplete={() => setEnabledNext(true)} />
+        <EducationComponent
+          onComplete={() => setEnabledNext(true)}
+          resumeId={resumeId}
+        />
       )}
-      {activeFormIndex === 5 && <CertificationComponent />}
-      {activeFormIndex === 6 && <SkillsComponent />}
+      {activeFormIndex === 5 && (
+        <CertificationComponent
+          onComplete={() => setEnabledNext(true)}
+          resumeId={resumeId}
+        />
+      )}
+      {activeFormIndex === 6 && (
+        <SkillsComponent
+          onComplete={() => setEnabledNext(true)}
+          resumeId={resumeId}
+        />
+      )}
 
       {activeFormIndex === 7 && (
         <ResumeCompletion onComplete={() => setEnabledNext(false)} />

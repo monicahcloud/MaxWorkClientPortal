@@ -1,3 +1,4 @@
+// EducationComponent.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -11,9 +12,10 @@ import { toast } from "sonner";
 
 interface Props {
   onComplete: () => void;
+  resumeId: string;
 }
 
-function EducationComponent({ onComplete }: Props) {
+function EducationComponent({ onComplete, resumeId }: Props) {
   const { education, setEducation } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
 
@@ -25,21 +27,24 @@ function EducationComponent({ onComplete }: Props) {
         }
         return edu;
       });
+      console.log("Updated Education:", updatedEducations); // Track updates
       return updatedEducations;
     });
   };
 
   const AddNewEducation = () => {
-    setEducation([
-      ...education,
-      {
-        school: "",
-        degree: "",
-        field: "",
-        startYear: new Date().getFullYear(),
-        endYear: new Date().getFullYear(),
-      },
-    ]);
+    const newEducation = {
+      school: "",
+      degree: "",
+      field: "",
+      startYear: new Date().getFullYear(),
+      endYear: new Date().getFullYear(),
+    };
+    setEducation((prev) => {
+      const result = [...prev, newEducation];
+      console.log("Added new Education", result);
+      return result;
+    });
   };
 
   const RemoveEducation = (indexToRemove: number) => {

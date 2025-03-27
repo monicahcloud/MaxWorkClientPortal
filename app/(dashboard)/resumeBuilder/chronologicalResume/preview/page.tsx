@@ -1,10 +1,13 @@
+"use client";
+
+import React from "react";
 import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 import CertificationPreview from "./CertificationPreview";
 import EducationPreview from "./EducationPreview";
-import ExperiencePreview from "./ExperiencePreview";
 import PersonalDetailPreview from "./PersonDetailPreview";
 import SkillPreview from "./SkillPreview";
 import SummaryPreview from "./SummaryPreview";
+import ExperiencePreview from "./ExperiencePreview";
 
 interface ChronologicalPreviewSectionProps {
   resumeData?: any;
@@ -22,7 +25,8 @@ export default function ChronologicalPreviewSection({
   const education = resumeData?.education || context.education;
   const skills = resumeData?.skills || context.skills;
   const certifications = resumeData?.certifications || context.certifications;
-
+  console.log("Experiences:", experiences);
+  console.log("Education:", education);
   return (
     <div className="shadow-lg h-full p-14 border-t-[20px]">
       {/* Personal Detail */}

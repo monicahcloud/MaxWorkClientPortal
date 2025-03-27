@@ -8,8 +8,11 @@ import {
 } from "@/app/context/ResumeBuilderContext";
 import CertificationForm from "./CertificationForm";
 import { toast } from "sonner";
-
-function CertificationComponent() {
+interface Props {
+  onComplete: () => void;
+  resumeId: string;
+}
+function CertificationComponent({ onComplete, resumeId }: Props) {
   const { certifications, setCertifications } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +51,6 @@ function CertificationComponent() {
   const handleSaveCertifications = async () => {
     setLoading(true);
     try {
-      // Logic to save certifications to your database using your API
       const resumeId = new URLSearchParams(window.location.search).get(
         "resumeId"
       );
@@ -88,6 +90,10 @@ function CertificationComponent() {
         <CertificationForm
           key={index}
           index={index}
+          certification={cert}
+          onChange={(updatedCert) =>
+            handleCertificationChange(index, updatedCert)
+          } // Corrected line
           onRemove={RemoveCertification}
         />
       ))}

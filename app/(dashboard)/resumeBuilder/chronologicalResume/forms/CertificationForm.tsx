@@ -1,9 +1,10 @@
 "use client";
 
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
+import { Certification } from "@/app/context/ResumeBuilderContext";
 import {
   Popover,
   PopoverContent,
@@ -15,45 +16,35 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface CertificationFormProps {
+  certification: Certification;
   index: number;
+  onChange: (updated: Certification) => void; // Corrected prop type
   onRemove: (index: number) => void;
+  onComplete: () => void;
+  resumeId: string;
 }
 
-function CertificationForm({ index, onRemove }: CertificationFormProps) {
-  const { certifications, setCertifications } = useResumeBuilder();
-  const certification = certifications[index];
-
+function CertificationForm({
+  certification,
+  index,
+  onChange,
+  onRemove,
+  onComplete,
+  resumeId,
+}: CertificationFormProps) {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    const updatedCertifications = certifications.map((cert, i) => {
-      if (i === index) {
-        return { ...cert, [name]: value };
-      }
-      return cert;
-    });
-    setCertifications(updatedCertifications);
+    onChange({ ...certification, [name]: value }); // Corrected line
   };
 
   const handleIssueDateChange = (date: Date | undefined) => {
-    const updatedCertifications = certifications.map((cert, i) => {
-      if (i === index) {
-        return { ...cert, issueDate: date || new Date() }; // Provide a default Date
-      }
-      return cert;
-    });
-    setCertifications(updatedCertifications);
+    onChange({ ...certification, issueDate: date || new Date() }); // Corrected line
   };
 
   const handleExpirationDateChange = (date: Date | undefined) => {
-    const updatedCertifications = certifications.map((cert, i) => {
-      if (i === index) {
-        return { ...cert, expirationDate: date || undefined }; // still allow undefined for expiration date.
-      }
-      return cert;
-    });
-    setCertifications(updatedCertifications);
+    onChange({ ...certification, expirationDate: date || undefined }); // Corrected line
   };
 
   return (
@@ -136,15 +127,6 @@ function CertificationForm({ index, onRemove }: CertificationFormProps) {
               />
             </PopoverContent>
           </Popover>
-        </div>
-        <div className="col-span-2">
-          <Label>Certification ID/License Number</Label>
-          <Input
-            type="text"
-            name="credentialId"
-            value={certification?.credentialId || ""}
-            onChange={handleInputChange}
-          />
         </div>
       </div>
     </div>

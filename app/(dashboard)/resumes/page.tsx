@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Notebook } from "lucide-react"; // Assuming you have lucide-react installed
 import Image from "next/image";
 export default function ResumesPage() {
   const [resumes, setResumes] = useState([]);
@@ -31,17 +30,19 @@ export default function ResumesPage() {
         {resumes.map((resume) => (
           <Link key={resume.id} href={`/resumeBuilder/${resume.id}/edit`}>
             {/* Card container with padding and background style */}
-            <div className="p-14 bg-gradient-to-b from-pink-100 via-purple-200 to-blue-200 flex flex-col items-center justify-center border rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
+            <div className=" border-y-red-700 border-8 p-14 bg-gradient-to-b from-red-400 via-white to-black-200 flex flex-col items-center justify-center rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
               {/* Displaying the title on top of the logo */}
-              <h2 className="text-center text-xl my-2">{resume.title}</h2>
               <Image
                 priority
-                src="/cv.png"
+                src="/MaxWorkLogo.png"
                 alt="thumbnail"
-                width={100}
-                height={100}
+                width={150}
+                height={150}
                 objectFit="contain"
-              />
+              />{" "}
+              <h2 className="text-center text-md font-bold my-2">
+                {resume.title}
+              </h2>
             </div>
           </Link>
         ))}

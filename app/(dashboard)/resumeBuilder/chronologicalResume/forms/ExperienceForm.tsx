@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { AIchatSession } from "@/utils/AIModal";
+
 import {
   Popover,
   PopoverContent,
@@ -13,17 +15,15 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { Brain, LoaderCircle } from "lucide-react";
 import {
   useResumeBuilder,
   Experience as ExperienceType,
 } from "@/app/context/ResumeBuilderContext";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { AIchatSession } from "@/utils/AIModal";
-import { Textarea } from "@/components/ui/textarea";
-import { Brain, LoaderCircle } from "lucide-react";
 
-// ExperienceForm.tsx
 interface ExperienceFormProps {
   experience: ExperienceType;
   index: number;
@@ -32,8 +32,10 @@ interface ExperienceFormProps {
   generateAI: (index: number) => void;
   loading: boolean;
 }
+
 interface Props {
   onComplete: () => void;
+  resumeId: string;
 }
 
 function ExperienceForm({
@@ -78,12 +80,11 @@ function ExperienceForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
         <div>
-          <InputField
+          <Label>Job Title</Label>
+          <Input
             name="role"
-            label="Job Title"
             value={experience.role}
             onChange={handleInputChange}
-            className=""
           />
 
           <Label className="mt-3">Organization, Location</Label>
@@ -106,7 +107,7 @@ function ExperienceForm({
                     !experience.startDate && "text-muted-foreground"
                   )}>
                   {experience.startDate
-                    ? format(experience.startDate, "PPP")
+                    ? format(new Date(experience.startDate), "PPP")
                     : "Pick a date"}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
@@ -114,7 +115,11 @@ function ExperienceForm({
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={experience.startDate}
+                  selected={
+                    experience.startDate
+                      ? new Date(experience.startDate)
+                      : undefined
+                  }
                   onSelect={handleStartDateChange}
                   initialFocus
                 />
@@ -132,7 +137,7 @@ function ExperienceForm({
                     !experience.endDate && "text-muted-foreground"
                   )}>
                   {experience.endDate
-                    ? format(experience.endDate, "PPP")
+                    ? format(new Date(experience.endDate), "PPP")
                     : "Pick a date"}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
@@ -140,7 +145,11 @@ function ExperienceForm({
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={experience.endDate}
+                  selected={
+                    experience.endDate
+                      ? new Date(experience.endDate)
+                      : undefined
+                  }
                   onSelect={handleEndDateChange}
                   initialFocus
                 />
@@ -183,7 +192,6 @@ function ExperienceForm({
   );
 }
 
-// Subcomponents
 interface InputFieldProps {
   name: string;
   label: string;
@@ -194,21 +202,23 @@ interface InputFieldProps {
   className?: string;
 }
 
+const promptTemplate =
+  "JobTitle: ${experiences[index].role}: depends on positionTitle provide a DETAILED discussion of duties and responsibilities. Be honest but don’t be humble.";
+
 const InputField = ({
   name,
   label,
   value,
   onChange,
   className = "",
-}: InputFieldProps) => {
-  return (
-    <div className={className}>
-      <Label>{label}</Label>
-      <Input name={name} value={value} onChange={onChange} />
-    </div>
-  );
-};
-function Experience({ onComplete }: Props) {
+}: InputFieldProps) => (
+  <div className={className}>
+    <Label>{label}</Label>
+    <Input name={name} value={value} onChange={onChange} />
+  </div>
+);
+
+function Experience({ onComplete, resumeId }: Props) {
   const { experiences, setExperiences } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
 
@@ -269,7 +279,7 @@ function Experience({ onComplete }: Props) {
 
       toast.success("Experience saved successfully!");
       if (onComplete) {
-        // Call onComplete
+        // Call onComplete if it exists
         onComplete();
       }
     } catch (error: any) {
@@ -278,86 +288,62 @@ function Experience({ onComplete }: Props) {
   };
 
   const GenerateSummaryFromAI = async (index: number) => {
-    setLoading(true);
     if (!experiences[index].role) {
       toast.error("Please enter a role first");
-      setLoading(false);
       return;
     }
+    setLoading(true);
 
-    let promptToUse = `positionTitle: ${experiences[index].role}: Based on the position title, provide a list of duties and responsibilities specifically for a resume experience section. Each duty should be concise, action-oriented, and formatted as a bullet point. Return the response in JSON format with a single key "dutiesBullets", which contains an array of strings representing the bullet points. Example: {"dutiesBullets": ["Managed project timelines and deliverables.", "Developed and maintained client relationships.", "Analyzed data to identify trends and insights." ]}`;
+    const prompt = `Provide a list of job duties in bullet point form for the role: ${experiences[index].role}`;
 
     try {
-      const result = await AIchatSession.sendMessage(promptToUse);
-      const rawResponse = result.response.text();
-      console.log("Raw AI Response:", rawResponse);
+      const result = await AIchatSession.sendMessage(prompt);
+      const parsedDataString = result.response.text();
+      console.log("AI Response String:", parsedDataString);
 
-      let parsedData;
       try {
-        parsedData = JSON.parse(rawResponse);
-      } catch (jsonError) {
-        console.error("JSON parsing error:", jsonError);
-        toast.error("AI returned an invalid JSON format.");
-        setLoading(false);
-        return;
-      }
+        const parsedData = JSON.parse(parsedDataString);
 
-      if (parsedData && Array.isArray(parsedData.dutiesBullets)) {
-        // Correct format received
-        const dutiesString = parsedData.dutiesBullets.join("\n- ");
-        handleExperienceChange(index, {
-          ...experiences[index],
-          duties: "- " + dutiesString,
-        });
-      } else {
-        // Handle incorrect format
-        console.error(
-          "AI response missing or invalid dutiesBullets:",
-          parsedData
-        );
-        toast.error(
-          "AI did not return duties in the expected bullet point format. Attempting to extract bullet points."
-        );
+        if (Array.isArray(parsedData) && parsedData.length > 0) {
+          const firstItem = parsedData[0] as any;
+          const jobDuties = firstItem?.job_duties;
 
-        // Attempt to extract bullet points from raw response
-        const extractedBullets = extractBulletsFromText(rawResponse);
-
-        if (extractedBullets.length > 0) {
-          const dutiesString = extractedBullets.join("\n- ");
-          handleExperienceChange(index, {
-            ...experiences[index],
-            duties: "- " + dutiesString,
-          });
+          if (Array.isArray(jobDuties) && jobDuties.length > 0) {
+            const dutiesText = jobDuties
+              .map((duty: string) => `- ${duty}`)
+              .join("\n");
+            handleExperienceChange(index, {
+              ...experiences[index],
+              duties: dutiesText,
+            });
+          } else {
+            console.error("AI did not return a valid list of duties.", {
+              jobDuties,
+            });
+            toast.error("AI did not return a valid list of duties.");
+          }
         } else {
-          toast.error("Failed to extract duties from AI response.");
+          console.error("AI did not return a list of duties.", { parsedData });
+          toast.error("AI did not return a list of duties.");
         }
+      } catch (parseError) {
+        console.error("Error parsing AI response:", parseError);
+        toast.error("Failed to parse AI response.");
       }
     } catch (error) {
-      console.error("Error generating summary:", error);
-      toast.error("Failed to generate summary from AI.");
+      console.error("Error generating duties:", error);
+      toast.error("Failed to generate duties from AI.");
     } finally {
       setLoading(false);
     }
   };
-
-  // Helper function to extract bullet points from text
-  function extractBulletsFromText(text: string): string[] {
-    const bulletRegex = /[-*]\s+(.+?)(?=\n|$)/g; // Regex to match bullet points
-    const bullets: string[] = [];
-    let match;
-
-    while ((match = bulletRegex.exec(text)) !== null) {
-      bullets.push(match[1].trim());
-    }
-
-    return bullets;
-  }
 
   return (
     <div className="p-4 border-t-4 border-blue-600 bg-gray-50 rounded-md shadow">
       <h1 className="text-2xl font-bold">Experience</h1>
 
       {experiences.map((exp, index) => {
+        console.log("Experience Data before render", exp);
         return (
           <ExperienceForm
             key={index}
@@ -365,7 +351,7 @@ function Experience({ onComplete }: Props) {
             index={index}
             onChange={handleExperienceChange}
             onRemove={RemoveExperience}
-            generateAI={GenerateSummaryFromAI}
+            generateAI={() => GenerateSummaryFromAI(index)}
             loading={loading}
           />
         );

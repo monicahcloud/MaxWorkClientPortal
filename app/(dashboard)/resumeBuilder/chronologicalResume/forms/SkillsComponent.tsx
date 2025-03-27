@@ -1,3 +1,4 @@
+// SkillsComponent.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -6,7 +7,11 @@ import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 import SkillsForm from "./SkillsForm";
 import { toast } from "sonner";
 
-function SkillsComponent() {
+interface Props {
+  onComplete: () => void;
+  resumeId: string;
+}
+function SkillsComponent({ onComplete, resumeId }: Props) {
   const { skills, setSkills } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
 
@@ -18,10 +23,18 @@ function SkillsComponent() {
         level: "0",
       },
     ]);
+    console.log("Added New Skill. Skills array:", [
+      ...skills,
+      { name: "", level: "0" },
+    ]);
   };
 
   const RemoveSkill = (indexToRemove: number) => {
     setSkills(skills.filter((_, index) => index !== indexToRemove));
+    console.log(
+      "Removed skill. Skills array:",
+      skills.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   const handleSaveSkills = async () => {
@@ -65,7 +78,9 @@ function SkillsComponent() {
     const updatedSkills = skills.map((skill, i) =>
       i === index ? updatedSkill : skill
     );
-    setSkills(updatedSkills);
+    // Ensure that the setSkills function creates a new array instance.
+    setSkills([...updatedSkills]);
+    console.log("Updated Skills:", [...updatedSkills]);
   };
 
   return (

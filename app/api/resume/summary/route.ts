@@ -23,6 +23,9 @@ export async function POST(req: Request) {
       data: {
         summary: {
           upsert: {
+            where: {
+              resumeId: resumeId, // Add the where clause. Adjust the where clause to match your schema.
+            },
             create: {
               text: content,
             },

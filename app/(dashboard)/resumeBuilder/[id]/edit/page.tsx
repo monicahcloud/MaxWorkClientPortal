@@ -19,13 +19,21 @@ import FederalPreviewPage from "../../federalResume/PreviewSection";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
+const EditResumeWrapper = () => (
+  <ResumeBuilderProvider>
+    <EditResume />
+  </ResumeBuilderProvider>
+);
+
+export default EditResumeWrapper;
+
 function EditResume() {
   const { getToken } = useAuth();
   const params = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [resumeType, setResumeType] = useState<string | null>(null); // Store resume type
+  const [resumeType, setResumeType] = useState<string | null>(null);
   const [resumeData, setResumeData] = useState<any>(null);
 
   const {
@@ -59,29 +67,27 @@ function EditResume() {
           },
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch resume data");
-        }
+        if (!response.ok) throw new Error("Failed to fetch resume data");
 
-        const resumeData = await response.json();
-        setResumeData(resumeData); // Store the full data object
+        const data = await response.json();
+        setResumeData(data);
 
-        console.log("Fetched Resume Data:", resumeData); // 🔍 Add this line
+        console.log("✅ Fetched Resume Data:", data);
 
-        // Update context state with fetched data
-        setPersonalInfo(resumeData.personalInfo);
-        setSummary(resumeData.summary);
-        setExperiences(resumeData.experiences);
-        setEducation(resumeData.education);
-        setSkills(resumeData.skills);
-        setCertifications(resumeData.certifications);
-        setAchievements(resumeData.achievements);
-        setImage(resumeData.image);
-        setResumeType(resumeData.resumeType); // Set resume type
+        // Populate context
+        setPersonalInfo(data.personalInfo);
+        setSummary(data.summary);
+        setExperiences(data.experiences);
+        setEducation(data.education);
+        setSkills(data.skills);
+        setCertifications(data.certifications);
+        setAchievements(data.achievements);
+        setImage(data.image);
+        setResumeType(data.resumeType);
 
         setLoading(false);
-      } catch (err) {
-        console.error("Error fetching resume data:", err);
+      } catch (err: any) {
+        console.error("Fetch error:", err);
         setError(err.message || "An error occurred");
         setLoading(false);
       }
@@ -125,105 +131,96 @@ function EditResume() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update resume data");
-      }
+      if (!response.ok) throw new Error("Failed to update resume data");
 
       toast.success("Resume saved successfully!");
-
       router.push(`/resumeBuilder/${params.id}`);
-    } catch (err) {
-      console.error("Error updating resume data:", err);
+    } catch (err: any) {
+      console.error("Save error:", err);
       toast.error(err.message || "Something went wrong while saving.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const renderForm = () => {
     switch (resumeType) {
       case "chronological":
-        return <ChronologicalFormSection />;
+        return <ChronologicalFormSection resumeId={params.id as string} />;
       case "functional":
-        return <FunctionalFormPage />;
+        return <FunctionalFormPage resumeId={params.id as string} />;
       case "combination":
-        return <CombinationFormPage />;
+        return <CombinationFormPage resumeId={params.id as string} />;
       case "federal":
-        return <FederalFormPage />;
+        return <FederalFormPage resumeId={params.id as string} />;
       default:
-        return <ChronologicalFormSection />; // Default to chronological if resumeType is not set
+        return <ChronologicalFormSection resumeId={params.id as string} />;
     }
   };
 
-  const renderPreview = (data: any) => {
+  const renderPreview = () => {
     switch (resumeType) {
       case "chronological":
-        return <ChronologicalPreviewSection resumeData={data} />;
+        return <ChronologicalPreviewSection resumeData={resumeData} />;
       case "functional":
-        return <FunctionalPreviewPage resumeData={data} />;
+        return <FunctionalPreviewPage resumeData={resumeData} />;
       case "combination":
-        return <CombinationPreviewPage resumeData={data} />;
+        return <CombinationPreviewPage resumeData={resumeData} />;
       case "federal":
-        return <FederalPreviewPage resumeData={data} />;
+        return <FederalPreviewPage resumeData={resumeData} />;
       default:
-        return <ChronologicalPreviewSection resumeData={data} />;
+        return <ChronologicalPreviewSection resumeData={resumeData} />;
     }
   };
 
   return (
-    <ResumeBuilderProvider>
-      <div className="w-full justify-center gap-10 lg:px-5 2xl:px-10 py-4 grid grid-cols-1 lg:grid-cols-12">
-        <div className="col-span-12 lg:col-span-6 2xl:col-span-6 flex items-center flex-col gap-4 px-2">
-          <h1 className="text-3xl font-bold tracking-wide ">
-            Edit Your Resume
-          </h1>
-          {renderForm()}
-          <Button
-            onClick={handleSave}
-            disabled={loading}
-            className={`bg-slate-900 text-white px-4 py-2 rounded flex items-center justify-center gap-2 ${
-              loading ? "opacity-70 cursor-not-allowed" : ""
-            }`}>
-            {loading ? (
-              <>
-                <svg
-                  className="animate-spin h-4 w-4 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
-                Saving...
-              </>
-            ) : (
-              "Save Changes"
-            )}
-          </Button>
-        </div>
-        <div className="col-span-12 lg:col-span-6 2xl:col-span-6">
-          {renderPreview(resumeData)}
-        </div>
+    <div className="w-full justify-center gap-10 lg:px-5 2xl:px-10 py-4 grid grid-cols-1 lg:grid-cols-12">
+      <div className="col-span-12 lg:col-span-6 2xl:col-span-6 flex items-center flex-col gap-4 px-2">
+        <h1 className="text-3xl font-bold tracking-wide ">Edit Your Resume</h1>
+
+        {renderForm()}
+
+        <Button
+          onClick={handleSave}
+          disabled={loading}
+          className={`bg-slate-900 text-white px-4 py-2 rounded flex items-center justify-center gap-2 ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
+          }`}>
+          {loading ? (
+            <>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              Saving...
+            </>
+          ) : (
+            "Save Changes"
+          )}
+        </Button>
       </div>
-    </ResumeBuilderProvider>
+
+      <div className="col-span-12 lg:col-span-6 2xl:col-span-6">
+        {renderPreview()}
+      </div>
+    </div>
   );
 }
-
-export default EditResume;

@@ -1,28 +1,16 @@
-"use client";
-
 import React from "react";
-import {
-  useResumeBuilder,
-  Certification as CertificationType,
-} from "@/app/context/ResumeBuilderContext";
+import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 
-interface CertificationPreviewProps {
-  certifications?: CertificationType[];
-}
-
-const CertificationPreview: React.FC<CertificationPreviewProps> = ({
-  certifications: propCertifications,
-}) => {
-  const context = useResumeBuilder();
-  const certifications = propCertifications || context.certifications;
-
-  if (!certifications || certifications.length === 0) return null;
-
+function CertificationPreview() {
+  const { certifications } = useResumeBuilder();
+  // Check if there are any certifications with actual data
   const hasCertifications = certifications.some(
     (cert) => cert.title || cert.issuer || cert.issueDate || cert.expirationDate
   );
 
-  if (!hasCertifications) return null;
+  if (!hasCertifications) {
+    return null; // Don't render anything if no certifications with data
+  }
 
   return (
     <div className="mb-6">
@@ -33,7 +21,7 @@ const CertificationPreview: React.FC<CertificationPreviewProps> = ({
       {certifications.map((cert, index) => (
         <div key={index} className="my-5">
           <h2 className="text-sm font-bold flex justify-between">
-            {cert.title || "Certification Title"}
+            {cert.title}
             <span>
               {cert.issueDate
                 ? new Date(cert.issueDate).toISOString().split("T")[0]
@@ -44,11 +32,11 @@ const CertificationPreview: React.FC<CertificationPreviewProps> = ({
                 : "N/A"}
             </span>
           </h2>
-          <h2 className="text-xs">{cert.issuer || "Issuer"}</h2>
+          <h2 className="text-xs ">{cert.issuer}</h2>
         </div>
       ))}
     </div>
   );
-};
+}
 
 export default CertificationPreview;

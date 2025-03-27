@@ -9,6 +9,7 @@ interface Props {
   index: number;
   onRemove: (indexToRemove: number) => void;
   onComplete: () => void;
+
   updateSkill: (index: number, updatedSkill: Skill) => void;
   skill: Skill;
 }

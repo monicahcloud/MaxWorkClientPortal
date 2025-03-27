@@ -1,3 +1,4 @@
+// components/chronologicalResume/preview/ExperiencePreview.tsx
 "use client";
 
 import React from "react";
@@ -41,19 +42,17 @@ const ExperiencePreview: React.FC<ExperiencePreviewProps> = ({
             </span>
           </h2>
 
-          <h2 className="text-sm font-bold mt-1">
+          <h2 className="text-sm font-semibold ">
             {exp.company || "Company Name"}
           </h2>
 
           <div className="mt-3 space-y-2 text-xs">
             {exp.duties && (
-              <div>
-                <ul className="list-disc list-inside mt-1">
-                  {exp.duties.split("\n").map((duty, dutyIndex) => (
-                    <li key={dutyIndex}>{duty.replace(/^\s*-\s*/, "")}</li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="list-disc list-inside mt-1">
+                {exp.duties.split("\n").map((duty, dutyIndex) => (
+                  <li key={dutyIndex}>{duty.replace(/^\s*-\s*/, "")}</li>
+                ))}
+              </ul>
             )}
           </div>
         </div>
