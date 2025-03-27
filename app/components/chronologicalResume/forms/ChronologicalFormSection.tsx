@@ -10,7 +10,8 @@ import EducationComponent from "@/app/(dashboard)/resumeBuilder/chronologicalRes
 import CertificationComponent from "@/app/(dashboard)/resumeBuilder/chronologicalResume/forms/CertificationComponent";
 import SkillsComponent from "@/app/(dashboard)/resumeBuilder/chronologicalResume/forms/SkillsComponent";
 import ResumeCompletion from "@/app/(dashboard)/resumeBuilder/resumesComponents/ResumeCompletion";
-
+import ViewResumePage from "@/app/(dashboard)/my-resume/[resume-id]/view/page";
+import { useRouter } from "next/navigation";
 interface ChronologicalFormSectionProps {
   resumeId: string;
   resumeTitle: string;
@@ -37,6 +38,7 @@ export default function ChronologicalFormSection({
 
   const [activeFormIndex, setActiveFormIndex] = useState(1);
   const [enableNext, setEnabledNext] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Enable next if the current form has data
@@ -127,7 +129,9 @@ export default function ChronologicalFormSection({
       )}
 
       {activeFormIndex === 7 && (
-        <ResumeCompletion onComplete={() => setEnabledNext(false)} />
+        <Button onClick={() => router.push(`/my-resume/${resumeId}/view`)}>
+          View Resume
+        </Button>
       )}
     </div>
   );

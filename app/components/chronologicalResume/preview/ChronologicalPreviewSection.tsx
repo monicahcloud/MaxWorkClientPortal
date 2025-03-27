@@ -9,21 +9,15 @@ import ExperiencePreview from "@/app/(dashboard)/resumeBuilder/chronologicalResu
 import CertificationPreview from "@/app/(dashboard)/resumeBuilder/chronologicalResume/preview/CertificationPreview";
 import SkillPreview from "@/app/(dashboard)/resumeBuilder/chronologicalResume/preview/SkillPreview";
 
-interface ChronologicalPreviewSectionProps {
-  resumeData?: any;
-}
-
-const ChronologicalPreviewSection = ({
-  resumeData,
-}: ChronologicalPreviewSectionProps) => {
-  const context = useResumeBuilder();
-
-  const personalInfo = resumeData?.personalInfo || context.personalInfo;
-  const summary = resumeData?.summary || context.summary;
-  const experiences = resumeData?.experiences || context.experiences;
-  const education = resumeData?.education || context.education;
-  const skills = resumeData?.skills || context.skills;
-  const certifications = resumeData?.certifications || context.certifications;
+const ChronologicalPreviewSection = () => {
+  const {
+    personalInfo,
+    summary,
+    experiences,
+    education,
+    skills,
+    certifications,
+  } = useResumeBuilder();
 
   return (
     <div className="shadow-lg h-full p-14 border-t-[20px]">
@@ -36,4 +30,5 @@ const ChronologicalPreviewSection = ({
     </div>
   );
 };
+
 export default ChronologicalPreviewSection;

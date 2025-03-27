@@ -6,7 +6,6 @@ import {
   createAndEditJobSchema,
   createAndEditResumeSchema,
   ResumeInfo,
-  CreateAndEditResumeType,
 } from "./types";
 import { redirect } from "next/navigation";
 import PrismaClient from "@prisma/client";
