@@ -9,7 +9,8 @@ import {
   CreateAndEditResumeType,
 } from "./types";
 import { redirect } from "next/navigation";
-import { Prisma, UserResume } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
+
 import { prisma } from "./prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
@@ -285,43 +286,3 @@ export async function getSingleResume(resumeId: string) {
     return null;
   }
 }
-
-// export async function updateResume(id: string, updatedData: any) {
-//   console.log(`📌 Updating Resume ID: ${id} with Data:`, updatedData);
-
-//   try {
-//     const res = await fetch(`/resumes/${id}`, {
-//       method: "PUT",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(updatedData),
-//     });
-
-//     if (!res.ok) {
-//       console.error("❌ API Error:", res.status, res.statusText);
-//       throw new Error("Failed to update resume");
-//     }
-
-//     const data = await res.json();
-//     console.log("✅ Resume Updated Successfully:", data);
-//     return data;
-//   } catch (error) {
-//     console.error("❌ Error Updating Resume:", error);
-//     throw error;
-//   }
-// }
-
-// export async function updateResume(updatedData: ResumeInfo) {
-//   const response = await fetch(`/resumes/${updatedData.id}/edit`, {
-//     method: "PUT",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(updatedData),
-//   });
-
-//   if (!response.ok) {
-//     throw new Error("Failed to update resume");
-//   }
-
-//   return response.json();
-// }
