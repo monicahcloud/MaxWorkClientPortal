@@ -9,7 +9,8 @@ import {
   CreateAndEditResumeType,
 } from "./types";
 import { redirect } from "next/navigation";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import type { Prisma } from "@prisma/client"; // ✅ Use `type` import
 
 import { prisma } from "./prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
@@ -207,9 +208,6 @@ export async function createResume(values: {
     console.log("✅ Resume successfully created:", resume);
     return resume;
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error("🚨 Prisma Error Code:", error.code);
-    }
     console.error("❌ Error creating resume:", error);
     throw new Error("Failed to create resume.");
   }
