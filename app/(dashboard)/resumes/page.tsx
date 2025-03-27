@@ -30,7 +30,7 @@ export default function ResumesPage() {
         {resumes.map((resume) => (
           <Link key={resume.id} href={`/resumeBuilder/${resume.id}/edit`}>
             {/* Card container with padding and background style */}
-            <div className=" border-y-red-700 border-8 p-14 bg-gradient-to-b from-red-400 via-white to-black-200 flex flex-col items-center justify-center rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
+            <div className=" border-t-red-700 border-8 p-14 bg-gradient-to-b from-red-400 via-white to-black flex flex-col items-center justify-center rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
               {/* Displaying the title on top of the logo */}
               <Image
                 priority
