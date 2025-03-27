@@ -22,14 +22,7 @@ function FunctionalTemplate() {
       </h1>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <FunctionalFormPage />
-        <FunctionalPreviewPage
-          personalInfo={personalInfo}
-          summary={summary}
-          image={image}
-          experiences={experiences}
-          education={education}
-          certifications={certifications}
-        />
+        <FunctionalPreviewPage />
       </div>
     </div>
   );

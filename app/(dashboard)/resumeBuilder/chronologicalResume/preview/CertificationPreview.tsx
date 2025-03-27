@@ -1,15 +1,25 @@
 import React from "react";
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 
-function CertificationPreview() {
-  const { certifications } = useResumeBuilder();
-  // Check if there are any certifications with actual data
+interface Certification {
+  title?: string;
+  issuer?: string;
+  issueDate?: string;
+  expirationDate?: string;
+}
+
+interface CertificationPreviewProps {
+  certifications: Certification[];
+}
+
+const CertificationPreview = ({
+  certifications,
+}: CertificationPreviewProps) => {
   const hasCertifications = certifications.some(
     (cert) => cert.title || cert.issuer || cert.issueDate || cert.expirationDate
   );
 
   if (!hasCertifications) {
-    return null; // Don't render anything if no certifications with data
+    return null;
   }
 
   return (
@@ -32,11 +42,11 @@ function CertificationPreview() {
                 : "N/A"}
             </span>
           </h2>
-          <h2 className="text-xs ">{cert.issuer}</h2>
+          <h2 className="text-xs">{cert.issuer}</h2>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default CertificationPreview;

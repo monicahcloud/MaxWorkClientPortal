@@ -3,8 +3,19 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+
+export const dynamic = "force-dynamic";
+
+type Resume = {
+  id: string;
+  title: string;
+  resumeType?: string;
+  createdAt?: string;
+  // add other properties as needed
+};
+
 export default function ResumesPage() {
-  const [resumes, setResumes] = useState([]);
+  const [resumes, setResumes] = useState<Resume[]>([]);
 
   useEffect(() => {
     async function fetchResumes() {

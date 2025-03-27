@@ -13,10 +13,12 @@ import ResumeCompletion from "@/app/(dashboard)/resumeBuilder/resumesComponents/
 
 interface ChronologicalFormSectionProps {
   resumeId: string;
+  resumeTitle: string;
 }
 
 export default function ChronologicalFormSection({
   resumeId,
+  resumeTitle,
 }: ChronologicalFormSectionProps) {
   const {
     personalInfo,

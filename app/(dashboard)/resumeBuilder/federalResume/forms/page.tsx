@@ -45,7 +45,7 @@ export default function FormSection() {
         <PersonalDetailsForm onComplete={() => setEnabledNext(true)} />
       )}
       {activeFormIndex === 2 && (
-        <Summary onComplete={() => setEnabledNext(true)} />
+        <Summary onComplete={() => setEnabledNext(true)} resumeId={""} />
       )}
       {activeFormIndex === 3 && (
         <Experience onComplete={() => setEnabledNext(true)} />

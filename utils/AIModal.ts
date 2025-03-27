@@ -25,7 +25,7 @@ export const AIchatSession = model.startChat({
   history: [],
 });
 
-async function generateResponse(prompt: string) {
+export async function generateResponse(prompt: string) {
   try {
     const result = await AIchatSession.sendMessage(prompt);
     const response = await result.response;

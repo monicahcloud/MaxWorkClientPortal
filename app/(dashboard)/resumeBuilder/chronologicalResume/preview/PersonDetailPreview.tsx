@@ -1,14 +1,13 @@
 "use client";
 
 import React from "react";
-import {
-  useResumeBuilder,
-  PersonalInfo,
-} from "@/app/context/ResumeBuilderContext";
+import { PersonalInfo } from "@/app/context/ResumeBuilderContext";
 
-const PersonalDetailPreview = () => {
-  const { personalInfo } = useResumeBuilder();
+interface Props {
+  personalInfo: PersonalInfo;
+}
 
+const PersonalDetailPreview = ({ personalInfo }: Props) => {
   const fullName = `${personalInfo?.firstName || "FirstName"} ${
     personalInfo?.lastName || "LastName"
   }`;

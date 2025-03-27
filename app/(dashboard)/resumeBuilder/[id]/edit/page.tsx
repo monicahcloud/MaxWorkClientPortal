@@ -7,17 +7,10 @@ import {
   ResumeBuilderProvider,
   useResumeBuilder,
 } from "@/app/context/ResumeBuilderContext";
-import ChronologicalFormSection from "../../chronologicalResume/forms/page";
-import ChronologicalPreviewSection from "../../chronologicalResume/preview/page";
-import FunctionalFormPage from "../../functionalResume/forms/page";
-import FunctionalPreviewPage from "../../functionalResume/preview/page";
-// Import other form and preview components for different templates
-import CombinationFormPage from "../../functionalResume/preview/page";
-import CombinationPreviewPage from "../../functionalResume/preview/page";
-import FederalFormPage from "../../federalResume/forms/page";
-import FederalPreviewPage from "../../federalResume/PreviewSection";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import ChronologicalFormSection from "@/app/components/chronologicalResume/forms/ChronologicalFormSection";
+import ChronologicalPreviewSection from "@/app/components/chronologicalResume/preview/ChronologicalPreviewSection";
 
 const EditResumeWrapper = () => (
   <ResumeBuilderProvider>
@@ -149,15 +142,25 @@ function EditResume() {
   const renderForm = () => {
     switch (resumeType) {
       case "chronological":
-        return <ChronologicalFormSection resumeId={params.id as string} />;
-      case "functional":
-        return <FunctionalFormPage resumeId={params.id as string} />;
-      case "combination":
-        return <CombinationFormPage resumeId={params.id as string} />;
-      case "federal":
-        return <FederalFormPage resumeId={params.id as string} />;
+        return (
+          <ChronologicalFormSection
+            resumeId={params.id as string}
+            resumeTitle={params.resumeTitle as string}
+          />
+        );
+      // case "functional":
+      //   return <FunctionalFormPage resumeId={params.id as string} />;
+      // case "combination":
+      //   return <CombinationFormPage resumeId={params.id as string} />;
+      // case "federal":
+      //   return <FederalFormPage resumeId={params.id as string} />;
       default:
-        return <ChronologicalFormSection resumeId={params.id as string} />;
+        return (
+          <ChronologicalFormSection
+            resumeId={params.id as string}
+            resumeTitle={params.resumeTitle as string}
+          />
+        );
     }
   };
 
@@ -165,12 +168,12 @@ function EditResume() {
     switch (resumeType) {
       case "chronological":
         return <ChronologicalPreviewSection resumeData={resumeData} />;
-      case "functional":
-        return <FunctionalPreviewPage resumeData={resumeData} />;
-      case "combination":
-        return <CombinationPreviewPage resumeData={resumeData} />;
-      case "federal":
-        return <FederalPreviewPage resumeData={resumeData} />;
+      // case "functional":
+      //   return <FunctionalPreviewPage resumeData={resumeData} />;
+      // case "combination":
+      //   return <CombinationPreviewPage resumeData={resumeData} />;
+      // case "federal":
+      //   return <FederalPreviewPage resumeData={resumeData} />;
       default:
         return <ChronologicalPreviewSection resumeData={resumeData} />;
     }

@@ -1,22 +1,27 @@
 import React from "react";
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext"; // Import useResumeBuilder
-import { Skill } from "@/app/context/ResumeBuilderContext"; // Import Skill interface
 
-function SkillPreview() {
-  const { skills } = useResumeBuilder(); // Access skills from context
-  // Check if there are any skills
+interface Skill {
+  name: string;
+  level: string; // assuming level is stored as a string like "3", "5", etc.
+}
+
+interface SkillPreviewProps {
+  skills: Skill[];
+}
+
+const SkillPreview = ({ skills }: SkillPreviewProps) => {
   if (!skills || skills.length === 0) {
-    return null; // Don't render anything if no skills are present
+    return null;
   }
+
   return (
     <div className="my-6">
       <h1 className="text-xl font-bold mb-2 text-center tracking-wide uppercase">
-        skills
+        Skills
       </h1>
       <hr />
       <div className="grid grid-cols-2 gap-3 my-4">
-        {skills.map((skill: Skill) => {
-          // Type skill as Skill
+        {skills.map((skill) => {
           const ratingPercentage = parseInt(skill.level, 10) * 20;
 
           return (
@@ -35,6 +40,6 @@ function SkillPreview() {
       </div>
     </div>
   );
-}
+};
 
 export default SkillPreview;

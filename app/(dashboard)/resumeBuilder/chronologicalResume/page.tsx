@@ -1,34 +1,40 @@
 "use client";
 
-import React from "react";
-import { useSearchParams } from "next/navigation"; // or useParams if it's part of route params
+import React, { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { ResumeBuilderProvider } from "@/app/context/ResumeBuilderContext";
-import ChronologicalFormSection from "./forms/page";
-import ChronologicalPreviewSection from "../chronologicalResume/preview/page";
+import ChronologicalFormSection from "@/app/components/chronologicalResume/forms/ChronologicalFormSection";
+import ChronologicalPreviewSection from "@/app/components/chronologicalResume/preview/ChronologicalPreviewSection";
 
-function ChronologicalResume() {
+// Wrap the part that uses `useSearchParams()` in a separate client component
+function ChronologicalResumeInner() {
   const searchParams = useSearchParams();
-  const resumeId = searchParams.get("resumeId"); // ✅ Make sure this matches how you're using the ID
+  const resumeId = searchParams.get("resumeId");
 
   if (!resumeId) {
     return <div className="text-center text-red-500">Missing resume ID</div>;
   }
 
   return (
-    <ResumeBuilderProvider>
-      <div className="w-full px-4 lg:px-8 2xl:px-12 py-8">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Chronological Resume Builder
-        </h1>
+    <div className="w-full px-4 lg:px-8 2xl:px-12 py-8">
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        Chronological Resume Builder
+      </h1>
 
-        {/* Grid layout for form + preview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <ChronologicalFormSection resumeId={resumeId} />
-          <ChronologicalPreviewSection />
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <ChronologicalFormSection resumeId={resumeId} resumeTitle={""} />
+        <ChronologicalPreviewSection />
       </div>
-    </ResumeBuilderProvider>
+    </div>
   );
 }
 
-export default ChronologicalResume;
+export default function ChronologicalResumePage() {
+  return (
+    <ResumeBuilderProvider>
+      <Suspense fallback={<div className="text-center">Loading...</div>}>
+        <ChronologicalResumeInner />
+      </Suspense>
+    </ResumeBuilderProvider>
+  );
+}

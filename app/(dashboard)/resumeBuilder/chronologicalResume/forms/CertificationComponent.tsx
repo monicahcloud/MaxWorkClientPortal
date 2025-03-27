@@ -95,6 +95,10 @@ function CertificationComponent({ onComplete, resumeId }: Props) {
             handleCertificationChange(index, updatedCert)
           } // Corrected line
           onRemove={RemoveCertification}
+          onComplete={function (): void {
+            throw new Error("Function not implemented.");
+          }}
+          resumeId={""}
         />
       ))}
 

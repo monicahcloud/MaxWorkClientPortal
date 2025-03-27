@@ -23,7 +23,7 @@ export const resumeTemplates: ResumeTemplate[] = [
   },
   {
     title: "Chronological Resume",
-    image: "/chronologicalTemplate.png",
+    image: "/jobseeker.jpg",
     href: "/resumeBuilder/chronologicalResume",
     description: [
       "Used For: Job seekers with solid work history.",
@@ -34,7 +34,7 @@ export const resumeTemplates: ResumeTemplate[] = [
   },
   {
     title: "Functional Resume",
-    image: "/functionalTemplate.png",
+    image: "/interview.jpg",
     href: "/resumeBuilder/functionalResume",
     description: [
       "Used For: Career changers or employment gaps.",
@@ -45,7 +45,7 @@ export const resumeTemplates: ResumeTemplate[] = [
   },
   {
     title: "Combination Resume",
-    image: "/combinationTemplate.png",
+    image: "/functionalTemplate.png",
     href: "/resumeBuilder/combinationResume",
     description: [
       "Used For: Experienced professionals.",

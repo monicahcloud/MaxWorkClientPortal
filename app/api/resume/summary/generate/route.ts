@@ -1,11 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
-import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { prisma } from "@/utils/prisma";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { generateResponse } from "@/utils/AIModal"; // Import your generateResponse function
 
 export async function POST(req: Request) {
   try {
@@ -50,19 +46,22 @@ Each summary should be 2–3 clear, impressive sentences.
 Label each section exactly.
 `;
 
-    const aiRes = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
-    });
-    console.log("🔁 OpenAI raw response:", aiRes);
-    const fullResponse = aiRes.choices[0]?.message?.content ?? "";
+    const aiRes = await generateResponse(prompt); // Use generateResponse
 
-    return NextResponse.json({ fullResponse });
+    if (typeof aiRes === "string") {
+      return NextResponse.json({ fullResponse: aiRes });
+    } else {
+      console.error("❌ Gemini response error:", aiRes);
+      return NextResponse.json(
+        { error: "Gemini response error" },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     console.error("❌ AI summary error:", error);
     console.log(
-      "🔑 OpenAI Key in backend:",
-      process.env.OPENAI_API_KEY ? "Loaded" : "Missing"
+      "🔑 Gemini Key in backend:",
+      process.env.GEMINI_API_KEY ? "Loaded" : "Missing"
     );
 
     return NextResponse.json({ error: "Server error" }, { status: 500 });

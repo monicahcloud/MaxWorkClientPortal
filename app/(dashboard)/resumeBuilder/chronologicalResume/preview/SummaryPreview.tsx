@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
 
-const SummaryPreview = () => {
-  const { summary } = useResumeBuilder();
+interface SummaryProps {
+  summary: string | { text: string };
+}
 
+const SummaryPreview = ({ summary }: SummaryProps) => {
   let summaryText = "";
 
   if (typeof summary === "string") {
@@ -18,7 +19,7 @@ const SummaryPreview = () => {
     <div className="mb-6">
       <h1 className="text-xl font-bold mb-2 uppercase text-center">
         Professional Summary
-      </h1>{" "}
+      </h1>
       <hr />
       <p className="mt-4 text-sm text-gray-700 whitespace-pre-line">
         {summaryText || "Start typing your summary..."}
