@@ -9,7 +9,7 @@ import {
   CreateAndEditResumeType,
 } from "./types";
 import { redirect } from "next/navigation";
-import { PrismaClient } from "@prisma/client";
+import PrismaClient from "@prisma/client";
 import type { Prisma } from "@prisma/client"; // ✅ Use `type` import
 
 import { prisma } from "./prisma";
