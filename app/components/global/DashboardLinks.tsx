@@ -30,12 +30,12 @@ export const dashboardlinks = [
     href: "/resumes",
     icon: List,
   },
-  {
-    id: nanoid(),
-    name: "Applications",
-    href: "/applications",
-    icon: File,
-  },
+  // {
+  //   id: nanoid(),
+  //   name: "Applications",
+  //   href: "/applications",
+  //   icon: File,
+  // },
   {
     id: nanoid(),
     name: "Resume Builder",

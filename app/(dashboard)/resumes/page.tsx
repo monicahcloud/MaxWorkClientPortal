@@ -3,6 +3,25 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Loader2Icon, MoreVertical } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +35,9 @@ type Resume = {
 
 export default function ResumesPage() {
   const [resumes, setResumes] = useState<Resume[]>([]);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter(); // Initialize router
 
   useEffect(() => {
     async function fetchResumes() {
@@ -34,28 +56,101 @@ export default function ResumesPage() {
     fetchResumes();
   }, []);
 
+  const onDelete = () => {
+    setLoading(true);
+    // Implement delete logic here
+    // After deletion, you can update the resumes state or redirect
+    toast.success("Resume deleted");
+    setLoading(false);
+    setOpenAlert(false);
+  };
+
+  const handleEdit = (id: string) => {
+    router.push(`/resumeBuilder/${id}/edit`);
+  };
+
+  const handleView = (id: string) => {
+    router.push(`/my-resume/${id}/view`);
+  };
+
+  const handleDownload = (id: string) => {
+    // Implement download logic here
+    toast.success("Download started");
+    console.log(`Download resume with id: ${id}`);
+  };
+
   return (
     <div className="p-10 md:px-20 lg:px-32">
       <h2 className="font-bold text-3xl">My Resumes</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-10 gap-5">
         {resumes.map((resume) => (
-          <Link key={resume.id} href={`/resumeBuilder/${resume.id}/edit`}>
-            {/* Card container with padding and background style */}
-            <div className=" border-t-red-700 border-8 p-14 bg-gradient-to-b from-red-400 via-white to-black flex flex-col items-center justify-center rounded-lg border-primary h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
-              {/* Displaying the title on top of the logo */}
-              <Image
-                priority
-                src="/MaxWorkLogo.png"
-                alt="thumbnail"
-                width={150}
-                height={150}
-                objectFit="contain"
-              />{" "}
-              <h2 className="text-center text-md font-bold my-2">
+          <div key={resume.id}>
+            <Link href={`/resumeBuilder/${resume.id}/edit`}>
+              <div className=" border-t-red-700 border-t-8 p-14 bg-gradient-to-b from-red-400 via-white to-black flex flex-col items-center justify-center rounded-t-lg h-[280px] hover:scale-105 transition-all hover:shadow-md shadow-primary">
+                <div className="items-center flex justify-center">
+                  <Image
+                    priority
+                    src="/MaxWorkLogo.png"
+                    alt="thumbnail"
+                    width={150}
+                    height={150}
+                    objectFit="contain"
+                  />
+                </div>
+              </div>
+            </Link>
+            <div className="p-3 justify-between flex text-white bg-red-700 rounded-b-md">
+              <h2 className="text-center text-md text-white ">
                 {resume.title}
               </h2>
+              <div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <MoreVertical className="h-4 w-4 cursor-pointer" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => handleEdit(resume.id)}>
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleView(resume.id)}>
+                      View
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDownload(resume.id)}>
+                      Download
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setOpenAlert(true)}>
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <AlertDialog open={openAlert}>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete your resume.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel onClick={() => setOpenAlert(false)}>
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction onClick={onDelete} disabled={loading}>
+                        {loading ? (
+                          <Loader2Icon className="animate-spin" />
+                        ) : (
+                          "Delete"
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>
