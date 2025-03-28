@@ -105,7 +105,7 @@ function ExperienceForm({
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={experience.startDate}
+                  selected={experience.startDate || undefined} // Change is here
                   onSelect={handleStartDateChange}
                   initialFocus
                 />
@@ -131,7 +131,7 @@ function ExperienceForm({
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={experience.endDate}
+                  selected={experience.endDate || undefined} // Change is here
                   onSelect={handleEndDateChange}
                   initialFocus
                 />
@@ -304,6 +304,7 @@ function Experience({ onComplete }: Props) {
         status: "",
         grade: "",
         time: "",
+        resumeId: "",
       },
     ]);
   };

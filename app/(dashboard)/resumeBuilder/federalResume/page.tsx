@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-
+import React, { Suspense } from "react";
 import PreviewSectionPage from "./PreviewSection";
 import FormSectionPage from "./FormSectionPage";
+
 function FederalResume() {
   return (
     <div className="w-full px-4 lg:px-8 2xl:px-12 py-8">
@@ -14,9 +14,14 @@ function FederalResume() {
       {/* Grid layout for form + preview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* 📋 Form Section */}
-        <FormSectionPage />
+        <Suspense fallback={<div>Loading form...</div>}>
+          <FormSectionPage />
+        </Suspense>
+
         {/* 🖼️ Preview Section */}
-        <PreviewSectionPage />
+        <Suspense fallback={<div>Loading preview...</div>}>
+          <PreviewSectionPage />
+        </Suspense>
       </div>
     </div>
   );

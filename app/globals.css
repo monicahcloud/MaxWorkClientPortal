@@ -2,11 +2,15 @@
 
 @media print {
   #no-print {
-    display: none;
+    display: none !important;
   }
   #print-area {
-    display: block;
+    display: block !important;
+    background-color: lightgray; /* Temporary test */
   }
+  /* body > *:not(#print-area):not(.no-print-section) {
+    display: none !important;
+  } */
   body {
     margin: 0;
     padding: 0;

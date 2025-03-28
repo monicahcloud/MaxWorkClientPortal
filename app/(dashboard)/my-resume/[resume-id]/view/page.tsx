@@ -6,8 +6,14 @@ import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { RWebShare } from "react-web-share";
 
+interface ResumeInfo {
+  firstName: string;
+  lastName: string;
+  // Add other properties as needed
+}
+
 const ViewResumePage = () => {
-  const [resumeInfo, setResumeInfo] = useState(null);
+  const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
   const params = useParams();
   const resumeId = params["resume-id"];
   const {
@@ -35,7 +41,7 @@ const ViewResumePage = () => {
             Now you are ready to download your resume and you can share a unique
             url with your friends and family.
           </p>
-          <div className="flex justify-between px-44 my-10">
+          <div className="flex justify-between px-44 my-10  no-print-section">
             <Button onClick={HandleDownload}>Download</Button>
             <RWebShare
               data={{
@@ -49,7 +55,7 @@ const ViewResumePage = () => {
           </div>
         </div>
       </div>
-      <div id="print-area" className="my-10 mx-10 md:mx-20 lg:mx-36">
+      <div id="print-area" className="my-10 mx-10 md:mx-20 lg:mx-36 ">
         <ChronologicalPreviewSection
           personalInfo={personalInfo}
           summary={summary}

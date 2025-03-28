@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { AIchatSession } from "@/utils/AIModal";
-
+import { v4 as uuidv4 } from "uuid";
 import {
   Popover,
   PopoverContent,
@@ -235,9 +235,17 @@ function Experience({ onComplete, resumeId }: Props) {
   };
 
   const AddNewExperience = () => {
+    const resumeId = new URLSearchParams(window.location.search).get(
+      "resumeId"
+    );
+    if (!resumeId) {
+      toast.error("Resume ID is missing.");
+      return;
+    }
     setExperiences([
       ...experiences,
       {
+        id: uuidv4(),
         company: "",
         role: "",
         startDate: undefined,
@@ -249,6 +257,7 @@ function Experience({ onComplete, resumeId }: Props) {
         status: "",
         grade: "",
         time: "",
+        resumeId: resumeId,
       },
     ]);
   };
@@ -262,10 +271,15 @@ function Experience({ onComplete, resumeId }: Props) {
       const resumeId = new URLSearchParams(window.location.search).get(
         "resumeId"
       );
+      if (!resumeId) {
+        toast.error("Resume ID is missing.");
+        return;
+      }
       const experiencesWithResumeId = experiences.map((exp) => ({
         ...exp,
         resumeId: resumeId, // Add resumeId to each experience
       }));
+      console.log("Experiences being sent:", experiencesWithResumeId);
       const res = await fetch("/api/resume/experience", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -287,6 +301,8 @@ function Experience({ onComplete, resumeId }: Props) {
     }
   };
 
+  // ExperienceForm.tsx
+
   const GenerateSummaryFromAI = async (index: number) => {
     if (!experiences[index].role) {
       toast.error("Please enter a role first");
@@ -304,28 +320,37 @@ function Experience({ onComplete, resumeId }: Props) {
       try {
         const parsedData = JSON.parse(parsedDataString);
 
-        if (Array.isArray(parsedData) && parsedData.length > 0) {
-          const firstItem = parsedData[0] as any;
-          const jobDuties = firstItem?.job_duties;
+        let dutiesText = "";
 
-          if (Array.isArray(jobDuties) && jobDuties.length > 0) {
-            const dutiesText = jobDuties
-              .map((duty: string) => `- ${duty}`)
-              .join("\n");
-            handleExperienceChange(index, {
-              ...experiences[index],
-              duties: dutiesText,
-            });
-          } else {
-            console.error("AI did not return a valid list of duties.", {
-              jobDuties,
-            });
-            toast.error("AI did not return a valid list of duties.");
-          }
+        if (Array.isArray(parsedData)) {
+          // Handle array of objects with "job_duty"
+          dutiesText = parsedData
+            .map((item: any) => `- ${item.job_duty}`)
+            .join("\n");
+        } else if (
+          typeof parsedData === "object" &&
+          parsedData &&
+          Array.isArray(parsedData.job_duties)
+        ) {
+          // Handle object with "job_duties" array
+          dutiesText = parsedData.job_duties
+            .map((duty: string) => `- ${duty}`)
+            .join("\n");
+        } else if (typeof parsedData === "string") {
+          // Handle a simple string response
+          dutiesText = parsedData;
         } else {
-          console.error("AI did not return a list of duties.", { parsedData });
-          toast.error("AI did not return a list of duties.");
+          console.error("AI did not return a valid list of duties.", {
+            parsedData,
+          });
+          toast.error("AI did not return a valid list of duties.");
+          return; // Exit the function if parsing fails
         }
+
+        handleExperienceChange(index, {
+          ...experiences[index],
+          duties: dutiesText,
+        });
       } catch (parseError) {
         console.error("Error parsing AI response:", parseError);
         toast.error("Failed to parse AI response.");

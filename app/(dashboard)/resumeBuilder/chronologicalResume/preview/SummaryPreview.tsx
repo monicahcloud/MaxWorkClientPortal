@@ -3,16 +3,21 @@
 import React from "react";
 
 interface SummaryProps {
-  summary: string | { text: string };
+  summary: string | { text: string } | null;
 }
 
 const SummaryPreview = ({ summary }: SummaryProps) => {
   let summaryText = "";
+  let displayMessage = "Start typing your summary...";
 
-  if (typeof summary === "string") {
-    summaryText = summary;
-  } else if (summary && typeof summary === "object") {
-    summaryText = summary.text;
+  if (summary) {
+    if (typeof summary === "string") {
+      summaryText = summary;
+      displayMessage = summary;
+    } else if (typeof summary === "object") {
+      summaryText = summary.text;
+      displayMessage = summary.text;
+    }
   }
 
   return (
@@ -22,7 +27,7 @@ const SummaryPreview = ({ summary }: SummaryProps) => {
       </h1>
       <hr />
       <p className="mt-4 text-sm text-gray-700 whitespace-pre-line">
-        {summaryText || "Start typing your summary..."}
+        {displayMessage}
       </p>
     </div>
   );

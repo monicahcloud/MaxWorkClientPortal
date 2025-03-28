@@ -26,8 +26,8 @@ export interface Experience {
   id?: string;
   company: string;
   role: string;
-  startDate: Date | undefined;
-  endDate: Date | undefined;
+  startDate: Date | undefined | null;
+  endDate: Date | undefined | null;
   dateRange?: string;
   duties: string;
   responsibilities: string;
@@ -37,6 +37,7 @@ export interface Experience {
   grade: string;
   time: string;
   description?: string;
+  resumeId: string;
 }
 
 export interface Education {

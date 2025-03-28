@@ -2,7 +2,10 @@
 
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { ResumeBuilderProvider } from "@/app/context/ResumeBuilderContext";
+import {
+  ResumeBuilderProvider,
+  useResumeBuilder,
+} from "@/app/context/ResumeBuilderContext"; // Import useResumeBuilder
 import ChronologicalFormSection from "@/app/components/chronologicalResume/forms/ChronologicalFormSection";
 import ChronologicalPreviewSection from "@/app/components/chronologicalResume/preview/ChronologicalPreviewSection";
 
@@ -10,6 +13,14 @@ import ChronologicalPreviewSection from "@/app/components/chronologicalResume/pr
 function ChronologicalResumeInner() {
   const searchParams = useSearchParams();
   const resumeId = searchParams.get("resumeId");
+  const {
+    personalInfo,
+    summary,
+    experiences,
+    education,
+    skills,
+    certifications,
+  } = useResumeBuilder(); // Get context data
 
   if (!resumeId) {
     return <div className="text-center text-red-500">Missing resume ID</div>;
@@ -23,7 +34,14 @@ function ChronologicalResumeInner() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <ChronologicalFormSection resumeId={resumeId} resumeTitle={""} />
-        <ChronologicalPreviewSection />
+        <ChronologicalPreviewSection
+          personalInfo={personalInfo}
+          summary={summary}
+          experiences={experiences}
+          education={education}
+          skills={skills}
+          certifications={certifications}
+        />
       </div>
     </div>
   );

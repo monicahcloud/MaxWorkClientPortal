@@ -1,11 +1,7 @@
-import React from "react";
+"use client";
 
-interface Certification {
-  title?: string;
-  issuer?: string;
-  issueDate?: string;
-  expirationDate?: string;
-}
+import React from "react";
+import { Certification } from "@/app/context/ResumeBuilderContext";
 
 interface CertificationPreviewProps {
   certifications: Certification[];
@@ -34,11 +30,19 @@ const CertificationPreview = ({
             {cert.title}
             <span>
               {cert.issueDate
-                ? new Date(cert.issueDate).toISOString().split("T")[0]
+                ? cert.issueDate instanceof Date
+                  ? cert.issueDate.toISOString().split("T")[0]
+                  : typeof cert.issueDate === "string"
+                  ? new Date(cert.issueDate).toISOString().split("T")[0]
+                  : "N/A"
                 : "N/A"}{" "}
               -{" "}
               {cert.expirationDate
-                ? new Date(cert.expirationDate).toISOString().split("T")[0]
+                ? cert.expirationDate instanceof Date
+                  ? cert.expirationDate.toISOString().split("T")[0]
+                  : typeof cert.expirationDate === "string"
+                  ? new Date(cert.expirationDate).toISOString().split("T")[0]
+                  : "N/A"
                 : "N/A"}
             </span>
           </h2>

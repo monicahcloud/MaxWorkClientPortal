@@ -166,7 +166,16 @@ function EditResume() {
   const renderPreview = () => {
     switch (resumeType) {
       case "chronological":
-        return <ChronologicalPreviewSection resumeData={resumeData} />;
+        return (
+          <ChronologicalPreviewSection
+            personalInfo={personalInfo}
+            summary={summary}
+            experiences={experiences}
+            education={education}
+            skills={skills}
+            certifications={certifications}
+          />
+        );
       // case "functional":
       //   return <FunctionalPreviewPage resumeData={resumeData} />;
       // case "combination":
@@ -174,7 +183,16 @@ function EditResume() {
       // case "federal":
       //   return <FederalPreviewPage resumeData={resumeData} />;
       default:
-        return <ChronologicalPreviewSection resumeData={resumeData} />;
+        return (
+          <ChronologicalPreviewSection
+            personalInfo={personalInfo}
+            summary={summary}
+            experiences={experiences}
+            education={education}
+            skills={skills}
+            certifications={certifications}
+          />
+        );
     }
   };
 
