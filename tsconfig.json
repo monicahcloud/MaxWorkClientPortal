@@ -15,7 +15,7 @@
     "incremental": true,
     "baseUrl": ".", // ✅ Required for path aliases to work
     "paths": {
-      "@/*": ["app/*"] // ✅ Points to /app directory
+      "@/*": ["./*"] // ✅ Points to /app directory
     },
     "plugins": [
       {
