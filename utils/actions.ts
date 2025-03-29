@@ -8,7 +8,7 @@ import {
   ResumeInfo,
 } from "./types";
 import { redirect } from "next/navigation";
-import type { Prisma } from "@prisma/client"; // ✅ Use `type` import
+import { Prisma } from "@prisma/client"; // ✅ Use `type` import
 
 import { prisma } from "./prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
