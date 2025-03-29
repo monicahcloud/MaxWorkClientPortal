@@ -1,5 +1,8 @@
 "use client";
 import ChronologicalPreviewSection from "@/app/components/chronologicalResume/preview/ChronologicalPreviewSection";
+import { pdf } from "@react-pdf/renderer";
+import html2pdf from "html2pdf.js";
+
 import {
   ResumeBuilderProvider,
   useResumeBuilder,
@@ -9,6 +12,7 @@ import { useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { RWebShare } from "react-web-share";
 import { toast } from "sonner";
+import ChronologicalPDFDocument from "@/app/components/chronologicalResume/preview/ChronologicaPDFDocument";
 
 interface ResumeInfo {
   firstName: string;
@@ -89,8 +93,46 @@ const ViewResumePage = () => {
     setAchievements,
   ]);
 
-  const handleDownload = () => {
-    window.print();
+  const handleDownload = async () => {
+    // const element = document.getElementById("print-area");
+
+    // if (!element) {
+    //   console.error("No print-area found!");
+    //   return;
+    // }
+
+    // // Optional: scroll into view to force rendering if lazy-loaded
+    // element.scrollIntoView({ behavior: "auto", block: "center" });
+
+    // // Wait a moment to ensure rendering completes
+    // setTimeout(() => {
+    //   html2pdf()
+    //     .set({
+    //       margin: 0.5,
+    //       filename: "Resume.pdf",
+    //       html2canvas: { scale: 2, logging: true, useCORS: true },
+    //       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    //     })
+    //     .from(element)
+    //     .save();
+    // }, 100); // wait 100ms to ensure DOM settles
+    const blob = await pdf(
+      <ChronologicalPDFDocument
+        personalInfo={personalInfo}
+        summary={summary}
+        experiences={experiences}
+        education={education}
+        skills={skills}
+        certifications={certifications}
+      />
+    ).toBlob();
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "resume.pdf";
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
