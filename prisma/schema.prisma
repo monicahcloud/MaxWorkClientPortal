@@ -1,6 +1,8 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/client"
 }
+
 
 datasource db {
   provider  = "postgresql"
@@ -72,7 +74,7 @@ model Resume {
 model PersonalInfo {
   id         String   @id @default(uuid())
   resumeId   String   @unique
-  resume     Resume   @relation(fields: [resumeId], references: [id])
+  resume     Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   firstName  String
   lastName   String
   email      String
@@ -88,7 +90,7 @@ model Experience {
   id               String   @id @default(cuid())
   company          String
   role             String
-  resume           Resume   @relation(fields: [resumeId], references: [id])
+  resume           Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   resumeId         String
   startDate        DateTime?
   endDate          DateTime?
@@ -106,7 +108,7 @@ model Experience {
 model Education {
   id         String   @id @default(uuid())
   resumeId   String
-  resume     Resume   @relation(fields: [resumeId], references: [id])
+  resume     Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   school     String
   degree     String
   field      String
@@ -119,7 +121,7 @@ model Education {
 model Skill {
   id        String   @id @default(uuid())
   resumeId  String
-  resume    Resume   @relation(fields: [resumeId], references: [id])
+  resume    Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   name      String
   level     String
   description    String?
@@ -128,14 +130,14 @@ model Skill {
 model Summary {
   id        String   @id @default(uuid())
   resumeId  String   @unique
-  resume    Resume   @relation(fields: [resumeId], references: [id])
+  resume    Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   text      String
 }
 
 model Certification {
   id             String   @id @default(uuid())
   resumeId       String
-  resume         Resume   @relation(fields: [resumeId], references: [id])
+  resume         Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   title          String
   issuer         String
   issueDate      DateTime
@@ -149,7 +151,7 @@ model Certification {
 model Achievement {
   id          String   @id @default(uuid())
   resumeId    String
-  resume      Resume   @relation(fields: [resumeId], references: [id])
+  resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
   title       String
   description String
   date        DateTime

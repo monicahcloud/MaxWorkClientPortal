@@ -53,6 +53,7 @@
     "react-web-share": "^2.0.2",
     "recharts": "^2.10.3",
     "rm": "^0.1.8",
+    "sharp": "^0.33.5",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",

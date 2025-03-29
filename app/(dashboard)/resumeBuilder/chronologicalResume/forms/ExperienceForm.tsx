@@ -47,24 +47,28 @@ function ExperienceForm({
   loading,
 }: ExperienceFormProps) {
   const [isPresent, setIsPresent] = useState(false);
+  const { experiences } = useResumeBuilder();
+
+  // This pulls the latest version from context (not the stale prop)
+  const currentExperience = experiences[index] || experience;
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    onChange(index, { ...experience, [name]: value });
+    onChange(index, { ...currentExperience, [name]: value });
   };
 
   const handleStartDateChange = (date: Date | undefined) => {
-    onChange(index, { ...experience, startDate: date });
+    onChange(index, { ...currentExperience, startDate: date });
   };
 
   const handleEndDateChange = (date: Date | undefined) => {
-    onChange(index, { ...experience, endDate: date });
+    onChange(index, { ...currentExperience, endDate: date });
   };
 
   const handleDutiesChange = (value: string) => {
-    onChange(index, { ...experience, duties: value });
+    onChange(index, { ...currentExperience, duties: value });
   };
 
   return (
@@ -83,7 +87,7 @@ function ExperienceForm({
           <Label>Job Title</Label>
           <Input
             name="role"
-            value={experience.role}
+            value={currentExperience.role}
             onChange={handleInputChange}
           />
 
@@ -91,7 +95,7 @@ function ExperienceForm({
           <Input
             type="text"
             name="company"
-            value={experience.company}
+            value={currentExperience.company}
             onChange={handleInputChange}
           />
         </div>
@@ -104,10 +108,10 @@ function ExperienceForm({
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !experience.startDate && "text-muted-foreground"
+                    !currentExperience.startDate && "text-muted-foreground"
                   )}>
-                  {experience.startDate
-                    ? format(new Date(experience.startDate), "PPP")
+                  {currentExperience.startDate
+                    ? format(new Date(currentExperience.startDate), "PPP")
                     : "Pick a date"}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
@@ -116,8 +120,8 @@ function ExperienceForm({
                 <Calendar
                   mode="single"
                   selected={
-                    experience.startDate
-                      ? new Date(experience.startDate)
+                    currentExperience.startDate
+                      ? new Date(currentExperience.startDate)
                       : undefined
                   }
                   onSelect={handleStartDateChange}
@@ -134,10 +138,10 @@ function ExperienceForm({
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !experience.endDate && "text-muted-foreground"
+                    !currentExperience.endDate && "text-muted-foreground"
                   )}>
-                  {experience.endDate
-                    ? format(new Date(experience.endDate), "PPP")
+                  {currentExperience.endDate
+                    ? format(new Date(currentExperience.endDate), "PPP")
                     : "Pick a date"}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>
@@ -146,8 +150,8 @@ function ExperienceForm({
                 <Calendar
                   mode="single"
                   selected={
-                    experience.endDate
-                      ? new Date(experience.endDate)
+                    currentExperience.endDate
+                      ? new Date(currentExperience.endDate)
                       : undefined
                   }
                   onSelect={handleEndDateChange}
@@ -155,17 +159,10 @@ function ExperienceForm({
                 />
               </PopoverContent>
             </Popover>
-            {/* <div className="flex items-center mt-2">
-              <Checkbox
-                id="present"
-                checked={isPresent}
-                onCheckedChange={(checked) => setIsPresent(checked === true)}
-              />
-              <Label className="ml-2 text-sm font-medium">Present</Label>
-            </div> */}
           </div>
         </div>
       </div>
+
       <div className="flex justify-end items-end mb-5">
         <Button
           variant="outline"
@@ -182,10 +179,11 @@ function ExperienceForm({
           {loading ? "Generating..." : "Generate from AI"}
         </Button>
       </div>
+
       <Textarea
         placeholder="Briefly describe your duties..."
         rows={6}
-        value={experience.duties}
+        value={currentExperience.duties || ""}
         onChange={(e) => handleDutiesChange(e.target.value)}
       />
     </div>
@@ -218,178 +216,250 @@ const InputField = ({
   </div>
 );
 
-function Experience({ onComplete, resumeId }: Props) {
+const Experience = ({ onComplete, resumeId }: Props) => {
   const { experiences, setExperiences } = useResumeBuilder();
   const [loading, setLoading] = useState(false);
+  const [selectedAIExperience, setSelectedAIExperience] = useState<
+    number | null
+  >(null);
+  const [aiOptions, setAIOptions] = useState<{
+    index: number;
+    duties: string[];
+  } | null>(null);
 
   const handleExperienceChange = (index: number, updated: ExperienceType) => {
-    setExperiences((prevExperiences) => {
-      const updatedExperiences = prevExperiences.map((exp, i) => {
-        if (i === index) {
-          return { ...exp, ...updated };
-        }
-        return exp;
-      });
-      return updatedExperiences;
-    });
-  };
-
-  const AddNewExperience = () => {
-    // const resumeId = new URLSearchParams(window.location.search).get(
-    //   "resumeId"
-    // );
-    if (!resumeId) {
-      toast.error("Resume ID is missing.");
-      return;
-    }
-    setExperiences([
-      ...experiences,
-      {
-        id: uuidv4(),
-        company: "",
-        role: "",
-        startDate: undefined,
-        endDate: undefined,
-        duties: "",
-        responsibilities: "",
-        accomplishments: "",
-        clearance: "",
-        status: "",
-        grade: "",
-        time: "",
-        resumeId: resumeId,
-      },
-    ]);
-  };
-
-  const RemoveExperience = (indexToRemove: number) => {
-    setExperiences(experiences.filter((_, index) => index !== indexToRemove));
+    setExperiences((prev) =>
+      prev.map((exp, i) => (i === index ? { ...exp, ...updated } : exp))
+    );
   };
 
   const handleSaveExperiences = async () => {
+    if (!resumeId) return toast.error("Resume ID is missing.");
+
     try {
-      // const resumeId = new URLSearchParams(window.location.search).get(
-      //   "resumeId"
-      // );
-      if (!resumeId) {
-        toast.error("Resume ID is missing.");
-        return;
-      }
-      const experiencesWithResumeId = experiences.map((exp) => ({
-        ...exp,
-        resumeId: resumeId, // Add resumeId to each experience
-      }));
-      console.log("Experiences being sent:", experiencesWithResumeId);
       const res = await fetch("/api/resume/experience", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ experiences: experiencesWithResumeId }),
+        body: JSON.stringify({
+          experiences: experiences.map((exp) => ({
+            ...exp,
+            resumeId,
+          })),
+        }),
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Something went wrong");
+        const error = await res.json();
+        throw new Error(error.error || "Failed to save experiences");
       }
 
-      toast.success("Experience saved successfully!");
-      if (onComplete) {
-        // Call onComplete if it exists
-        onComplete();
-      }
+      toast.success("Experiences saved successfully");
+      onComplete();
     } catch (error: any) {
-      toast.error(error.message || "Failed to save experience.");
+      toast.error(error.message || "Error saving experiences");
     }
   };
 
-  // ExperienceForm.tsx
+  const generateFromAI = async (index: number) => {
+    const exp = experiences[index];
+    if (!exp.role) return toast.error("Please enter a job title first");
 
-  const GenerateSummaryFromAI = async (index: number) => {
-    if (!experiences[index].role) {
-      toast.error("Please enter a role first");
-      return;
-    }
     setLoading(true);
+    setSelectedAIExperience(index);
 
-    const prompt = `Provide a list of job duties in bullet point form for the role: ${experiences[index].role}`;
+    const prompt = `Provide 4-5 detailed job duties in bullet form for the role: ${exp.role}`;
 
     try {
       const result = await AIchatSession.sendMessage(prompt);
-      const parsedDataString = result.response.text();
-      console.log("AI Response String:", parsedDataString);
+      const data = JSON.parse(result.response.text());
 
-      try {
-        const parsedData = JSON.parse(parsedDataString);
-
-        let dutiesText = "";
-
-        if (Array.isArray(parsedData)) {
-          // Handle array of objects with "job_duty"
-          dutiesText = parsedData
-            .map((item: any) => `- ${item.job_duty}`)
-            .join("\n");
-        } else if (
-          typeof parsedData === "object" &&
-          parsedData &&
-          Array.isArray(parsedData.job_duties)
-        ) {
-          // Handle object with "job_duties" array
-          dutiesText = parsedData.job_duties
-            .map((duty: string) => `- ${duty}`)
-            .join("\n");
-        } else if (typeof parsedData === "string") {
-          // Handle a simple string response
-          dutiesText = parsedData;
-        } else {
-          console.error("AI did not return a valid list of duties.", {
-            parsedData,
-          });
-          toast.error("AI did not return a valid list of duties.");
-          return; // Exit the function if parsing fails
-        }
-
-        handleExperienceChange(index, {
-          ...experiences[index],
-          duties: dutiesText,
-        });
-      } catch (parseError) {
-        console.error("Error parsing AI response:", parseError);
-        toast.error("Failed to parse AI response.");
+      let duties: string[] = [];
+      if (Array.isArray(data)) {
+        duties = data.map((d) => (typeof d === "string" ? d : d.job_duty));
+      } else if (Array.isArray(data.job_duties)) {
+        duties = data.job_duties;
       }
+
+      setAIOptions({ index, duties });
     } catch (error) {
-      console.error("Error generating duties:", error);
-      toast.error("Failed to generate duties from AI.");
+      console.error("AI Error:", error);
+      toast.error("Failed to generate duties from AI");
     } finally {
       setLoading(false);
+      setSelectedAIExperience(null);
     }
   };
 
+  const applyAIDuty = (index: number, duty: string) => {
+    const current = experiences[index].duties || "";
+    const newDuties = `${current}\n- ${duty}`.trim();
+    handleExperienceChange(index, { ...experiences[index], duties: newDuties });
+  };
+
   return (
-    <div className="p-4 border-t-4 border-blue-600 bg-gray-50 rounded-md shadow">
-      <h1 className="text-2xl font-bold">Experience</h1>
+    <div className="p-6 border-t-4 border-blue-600 bg-gray-50 rounded-md shadow">
+      <h2 className="text-xl font-bold mb-2 uppercase">Experience</h2>
 
-      {experiences.map((exp, index) => {
-        //console.log("Experience Data before render", exp);
-        return (
-          <ExperienceForm
-            key={index}
-            experience={exp}
-            index={index}
-            onChange={handleExperienceChange}
-            onRemove={RemoveExperience}
-            generateAI={() => GenerateSummaryFromAI(index)}
-            loading={loading}
+      {experiences.map((exp, index) => (
+        <div
+          key={exp.id || index}
+          className="bg-white p-4 my-4 rounded-md shadow">
+          <div className="flex justify-between items-center">
+            <h3 className="font-semibold">Job #{index + 1}</h3>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() =>
+                setExperiences((prev) => prev.filter((_, i) => i !== index))
+              }>
+              Remove
+            </Button>
+          </div>
+
+          <Label className="mt-4">Job Title</Label>
+          <Input
+            name="role"
+            value={exp.role}
+            onChange={(e) =>
+              handleExperienceChange(index, { ...exp, role: e.target.value })
+            }
           />
-        );
-      })}
 
-      <div className="flex justify-between mt-4">
-        <Button variant="outline" onClick={AddNewExperience}>
+          <Label className="mt-4">Company</Label>
+          <Input
+            name="company"
+            value={exp.company}
+            onChange={(e) =>
+              handleExperienceChange(index, { ...exp, company: e.target.value })
+            }
+          />
+
+          <div className="flex gap-2 mt-4">
+            <div className="w-1/2">
+              <Label>Start Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start">
+                    {exp.startDate
+                      ? format(new Date(exp.startDate), "PPP")
+                      : "Pick a date"}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={
+                      exp.startDate ? new Date(exp.startDate) : undefined
+                    }
+                    onSelect={(date) =>
+                      handleExperienceChange(index, { ...exp, startDate: date })
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="w-1/2">
+              <Label>End Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-start">
+                    {exp.endDate
+                      ? format(new Date(exp.endDate), "PPP")
+                      : "Pick a date"}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={exp.endDate ? new Date(exp.endDate) : undefined}
+                    onSelect={(date) =>
+                      handleExperienceChange(index, { ...exp, endDate: date })
+                    }
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          <div className="flex justify-end mt-4">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={loading && selectedAIExperience === index}
+              onClick={() => generateFromAI(index)}
+              className="border-primary text-primary flex gap-2">
+              {loading && selectedAIExperience === index ? (
+                <LoaderCircle className="animate-spin w-4 h-4" />
+              ) : (
+                <Brain className="h-4 w-4" />
+              )}
+              {loading && selectedAIExperience === index
+                ? "Generating..."
+                : "Generate from AI"}
+            </Button>
+          </div>
+
+          <Textarea
+            className="mt-4"
+            placeholder="Add job duties here..."
+            rows={6}
+            value={exp.duties}
+            onChange={(e) =>
+              handleExperienceChange(index, { ...exp, duties: e.target.value })
+            }
+          />
+
+          {aiOptions && aiOptions.index === index && (
+            <div className="mt-3 bg-gray-100 rounded p-3">
+              <h4 className="font-medium text-sm mb-2 text-blue-700">
+                Gemini AI Suggestions
+              </h4>
+              <div className="grid gap-2">
+                {aiOptions.duties.map((duty, i) => (
+                  <div
+                    key={i}
+                    className="bg-white p-2 rounded shadow hover:bg-blue-50 cursor-pointer"
+                    onClick={() => applyAIDuty(index, duty)}>
+                    <p className="text-xs text-gray-800">- {duty}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+
+      <div className="flex justify-between mt-6">
+        <Button
+          variant="outline"
+          onClick={() =>
+            setExperiences((prev) => [
+              ...prev,
+              {
+                id: uuidv4(),
+                company: "",
+                role: "",
+                startDate: undefined,
+                endDate: undefined,
+                duties: "",
+                responsibilities: "",
+                accomplishments: "",
+                clearance: "",
+                status: "",
+                grade: "",
+                time: "",
+                resumeId,
+              },
+            ])
+          }>
           + Add Experience
         </Button>
         <Button onClick={handleSaveExperiences}>Save</Button>
       </div>
     </div>
   );
-}
+};
 
 export default Experience;

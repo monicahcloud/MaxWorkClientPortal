@@ -8,10 +8,9 @@ import {
   ResumeInfo,
 } from "./types";
 import { redirect } from "next/navigation";
-import type { Prisma } from "@prisma/client";
-
 import { prisma } from "./prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { Prisma } from "@/src/generated/client";
 
 async function authenticateAndRedirect(): Promise<string> {
   const { userId } = await auth(); // Await the promise

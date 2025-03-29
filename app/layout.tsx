@@ -7,8 +7,8 @@ import Providers from "./providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MaxWork Consulting Client Portal",
-  description: "MaxWork Consulting Client Portal for job seekers",
+  title: "MaxWork Staffing Client Portal",
+  description: "MaxWork Staffing Client Portal for job seekers",
 };
 
 export default function RootLayout({

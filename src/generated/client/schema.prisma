@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id      String  @id @default(cuid())
+  email   String  @unique
+  name    String?
+  phone   String
+  clerkId String
+}
+
+model UserResume {
+  id          String   @id @default(uuid())
+  clerkId     String
+  resumeTitle String
+  firstName   String?
+  lastName    String?
+  jobTitle    String?
+  address     String?
+  phone       String?
+  email       String?
+  userEmail   String?
+  userName    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Job {
+  id        String   @id @default(uuid())
+  clerkId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  position  String
+  company   String
+  location  String
+  mode      Mode
+  status    String
+}
+
+enum Mode {
+  FULLTIME
+  PARTTIME
+  INTERNSHIP
+}
+
+model Resume {
+  id             String          @id @default(uuid())
+  userId         String
+  title          String
+  createdAt      DateTime        @default(now())
+  thumbnailData  Json?
+  image          Bytes? // ✅ New image field
+  personalInfo   PersonalInfo?
+  experiences    Experience[]
+  education      Education[]
+  skills         Skill[]
+  certifications Certification[]
+  achievements   Achievement[]
+  summary        Summary?
+  resumeType     String?
+  themeColor     String?
+}
+
+model PersonalInfo {
+  id         String  @id @default(uuid())
+  resumeId   String  @unique
+  resume     Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  firstName  String
+  lastName   String
+  email      String
+  phone      String
+  address    String
+  website    String
+  department String
+  jobTitle   String
+  themeColor String?
+}
+
+model Experience {
+  id               String    @id @default(cuid())
+  company          String
+  role             String
+  resume           Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  resumeId         String
+  startDate        DateTime?
+  endDate          DateTime?
+  dateRange        String? // ✅ new field for combined display
+  duties           String?
+  responsibilities String?
+  accomplishments  String?
+  clearance        String?
+  grade            String?
+  status           String?
+  time             String?
+  description      String?
+}
+
+model Education {
+  id          String  @id @default(uuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  school      String
+  degree      String
+  field       String
+  startYear   Int
+  endYear     Int
+  dateRange   String? // ✅ new field for combined display
+  description String?
+}
+
+model Skill {
+  id          String  @id @default(uuid())
+  resumeId    String
+  resume      Resume  @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  name        String
+  level       String
+  description String?
+}
+
+model Summary {
+  id       String @id @default(uuid())
+  resumeId String @unique
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  text     String
+}
+
+model Certification {
+  id             String    @id @default(uuid())
+  resumeId       String
+  resume         Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  title          String
+  issuer         String
+  issueDate      DateTime
+  expirationDate DateTime?
+  credentialId   String?
+  credentialUrl  String?
+  dateRange      String? // ✅ new field for display
+  description    String?
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  resumeId    String
+  resume      Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  date        DateTime
+  dateRange   String? // ✅ optional formatted range string
+}
