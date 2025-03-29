@@ -136,7 +136,11 @@ export default function ChronologicalFormSection({
       )}
 
       {activeFormIndex === 7 && (
-        <Button onClick={() => router.push(`/my-resume/${resumeId}/view`)}>
+        <Button
+          className="flex mx-auto justify-center mt-20 "
+          size="lg"
+          variant="default"
+          onClick={() => router.push(`/my-resume/${resumeId}/view`)}>
           View Resume
         </Button>
       )}

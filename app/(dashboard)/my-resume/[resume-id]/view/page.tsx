@@ -1,16 +1,28 @@
 "use client";
 import ChronologicalPreviewSection from "@/app/components/chronologicalResume/preview/ChronologicalPreviewSection";
-import { useResumeBuilder } from "@/app/context/ResumeBuilderContext";
+import {
+  ResumeBuilderProvider,
+  useResumeBuilder,
+} from "@/app/context/ResumeBuilderContext";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RWebShare } from "react-web-share";
+import { toast } from "sonner";
 
 interface ResumeInfo {
   firstName: string;
   lastName: string;
   // Add other properties as needed
 }
+
+const ViewResumeWrapper = () => (
+  <ResumeBuilderProvider>
+    <ViewResumePage />
+  </ResumeBuilderProvider>
+);
+
+export default ViewResumeWrapper;
 
 const ViewResumePage = () => {
   const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
@@ -23,13 +35,66 @@ const ViewResumePage = () => {
     education,
     skills,
     certifications,
+    setPersonalInfo,
+    setSummary,
+    setExperiences,
+    setEducation,
+    setSkills,
+    setCertifications,
+    setAchievements,
   } = useResumeBuilder();
 
-  const HandleDownload = () => {
+  useEffect(() => {
+    const fetchResumeData = async () => {
+      console.log("Fetching resume data for resumeId:", resumeId);
+
+      try {
+        const response = await fetch(`/api/resumes/${resumeId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch resume data");
+        }
+        const data = await response.json();
+        console.log("Data from API:", data);
+
+        // Update context with fetched data
+        setPersonalInfo(data.personalInfo);
+        setSummary(data.summary);
+        setExperiences(data.experiences);
+        setEducation(data.education);
+        setSkills(data.skills);
+        setCertifications(data.certifications);
+        setAchievements(data.achievements);
+
+        // Set resumeInfo for share
+        setResumeInfo({
+          firstName: data.personalInfo?.firstName || "",
+          lastName: data.personalInfo?.lastName || "",
+        });
+      } catch (error: any) {
+        toast.error(error.message || "Failed to load resume");
+      }
+    };
+
+    if (resumeId) {
+      fetchResumeData();
+    }
+  }, [
+    resumeId,
+    setPersonalInfo,
+    setSummary,
+    setExperiences,
+    setEducation,
+    setSkills,
+    setCertifications,
+    setAchievements,
+  ]);
+
+  const handleDownload = () => {
     window.print();
   };
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
   return (
     <div>
       <div id="no-print">
@@ -42,7 +107,7 @@ const ViewResumePage = () => {
             url with your friends and family.
           </p>
           <div className="flex justify-between px-44 my-10  no-print-section">
-            <Button onClick={HandleDownload}>Download</Button>
+            <Button onClick={handleDownload}>Download</Button>
             <RWebShare
               data={{
                 text: "Hello Everyone, This is my resume please open url to see it",
@@ -55,6 +120,7 @@ const ViewResumePage = () => {
           </div>
         </div>
       </div>
+      <div></div>
       <div id="print-area" className="my-10 mx-10 md:mx-20 lg:mx-36 ">
         <ChronologicalPreviewSection
           personalInfo={personalInfo}
@@ -68,5 +134,3 @@ const ViewResumePage = () => {
     </div>
   );
 };
-
-export default ViewResumePage;

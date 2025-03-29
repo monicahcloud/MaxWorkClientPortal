@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 @media print {
-  #no-print {
+  body main.dashboard-layout {
+    /* Increased specificity */
+    display: none !important;
+    background-color: white;
+  }
+  .no-print-section {
     display: none !important;
   }
   #print-area {
     display: block !important;
-    background-color: lightgray; /* Temporary test */
-  }
-  /* body > *:not(#print-area):not(.no-print-section) {
-    display: none !important;
-  } */
-  body {
+    background-color: white;
     margin: 0;
     padding: 0;
     box-shadow: none;
+    border: 2px solid red;
   }
 }
 @page {

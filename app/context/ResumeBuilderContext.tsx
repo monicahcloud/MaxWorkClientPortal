@@ -159,7 +159,7 @@ const defaultContext: ResumeBuilderContextType = {
 };
 
 // 3️⃣ Create Context
-const ResumeBuilderContext =
+export const ResumeBuilderContext =
   createContext<ResumeBuilderContextType>(defaultContext);
 
 // 4️⃣ Provider

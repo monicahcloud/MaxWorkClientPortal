@@ -8,6 +8,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  console.log("API route hit for resumeId:", params.id); // Add this log
   try {
     const { userId } = await auth();
     const { id } = params;
@@ -35,6 +36,7 @@ export async function GET(
     if (!resume) {
       return NextResponse.json({ error: "Resume not found" }, { status: 404 });
     }
+    console.log("Fetched resume data:", resume); // Add this log
 
     return NextResponse.json(resume);
   } catch (error) {
@@ -98,26 +100,54 @@ export async function DELETE(
     const { userId } = await auth();
 
     if (!userId) {
-      console.log("DELETE API: Unauthorized user");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    console.log(`DELETE API: Attempting to delete resume with ID: ${id}`);
-
-    await prisma.resume.delete({
-      where: {
-        id: id,
-        userId: userId,
-      },
+    // Optional: Confirm resume belongs to user (good for security)
+    const resume = await prisma.resume.findUnique({
+      where: { id },
     });
 
-    console.log(`DELETE API: Resume with ID: ${id} deleted successfully`);
+    if (!resume || resume.userId !== userId) {
+      return NextResponse.json(
+        { error: "Resume not found or unauthorized" },
+        { status: 403 }
+      );
+    }
+
+    // 🔥 Manually delete related records first
+    await prisma.personalInfo.deleteMany({
+      where: { resumeId: id },
+    });
+    await prisma.summary.deleteMany({
+      where: { resumeId: id },
+    });
+    await prisma.experience.deleteMany({
+      where: { resumeId: id },
+    });
+    await prisma.education.deleteMany({
+      where: { resumeId: id },
+    });
+    await prisma.skill.deleteMany({
+      where: { resumeId: id },
+    });
+    await prisma.certification.deleteMany({
+      where: { resumeId: id },
+    });
+    await prisma.achievement.deleteMany({
+      where: { resumeId: id },
+    });
+
+    // ✅ Now it's safe to delete the resume
+    await prisma.resume.delete({
+      where: { id },
+    });
 
     return NextResponse.json({ message: "Resume deleted successfully" });
-  } catch (error) {
-    console.error("DELETE API: Error deleting resume:", error);
+  } catch (error: any) {
+    console.error("DELETE API: Error deleting resume:", error.message);
     return NextResponse.json(
-      { error: "Failed to delete resume" },
+      { error: "Failed to delete resume", details: error.message },
       { status: 500 }
     );
   }

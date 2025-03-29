@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
     console.error("[SAVE EXPERIENCE ERROR]", error);
     return NextResponse.json(
       { error: "Server error", details: "An unknown error occurred" },
+
       { status: 500 }
     );
   }

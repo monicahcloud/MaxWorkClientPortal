@@ -155,14 +155,14 @@ function ExperienceForm({
                 />
               </PopoverContent>
             </Popover>
-            <div className="flex items-center mt-2">
+            {/* <div className="flex items-center mt-2">
               <Checkbox
                 id="present"
                 checked={isPresent}
                 onCheckedChange={(checked) => setIsPresent(checked === true)}
               />
               <Label className="ml-2 text-sm font-medium">Present</Label>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -235,9 +235,9 @@ function Experience({ onComplete, resumeId }: Props) {
   };
 
   const AddNewExperience = () => {
-    const resumeId = new URLSearchParams(window.location.search).get(
-      "resumeId"
-    );
+    // const resumeId = new URLSearchParams(window.location.search).get(
+    //   "resumeId"
+    // );
     if (!resumeId) {
       toast.error("Resume ID is missing.");
       return;
@@ -268,9 +268,9 @@ function Experience({ onComplete, resumeId }: Props) {
 
   const handleSaveExperiences = async () => {
     try {
-      const resumeId = new URLSearchParams(window.location.search).get(
-        "resumeId"
-      );
+      // const resumeId = new URLSearchParams(window.location.search).get(
+      //   "resumeId"
+      // );
       if (!resumeId) {
         toast.error("Resume ID is missing.");
         return;
@@ -368,7 +368,7 @@ function Experience({ onComplete, resumeId }: Props) {
       <h1 className="text-2xl font-bold">Experience</h1>
 
       {experiences.map((exp, index) => {
-        console.log("Experience Data before render", exp);
+        //console.log("Experience Data before render", exp);
         return (
           <ExperienceForm
             key={index}
